@@ -5,11 +5,21 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func0;
+import rx.schedulers.Schedulers;
+
 public class MainTwitterActivity extends AppCompatActivity {
+
+    private Subscription subscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +36,40 @@ public class MainTwitterActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        subscription = getIntObservable()
+                //
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Integer>() {
+
+            //Called when the observable is done, called only once
+            //Called right after onNext()
+            @Override
+            public void onCompleted() {
+            }
+
+            //Called when an error occurs
+            @Override
+            public void onError(Throwable e) {
+                Log.e("GMAIL",e.getMessage(), e);
+            }
+
+            //This gets called when the API call gets returned and the int is returned
+            @Override
+            public void onNext(Integer integer) {
+                Log.d("I DID IT", integer.toString());
+            }
+        });
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        //This is essential as it prevents a memory leak
+        if(subscription != null && !subscription.isUnsubscribed()){
+            subscription.unsubscribe();
+        }
     }
 
     @Override
@@ -48,5 +92,15 @@ public class MainTwitterActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    //Can incorporate Models into this, maybe as a way to incorporate Retrofit?
+    public Observable<Integer> getIntObservable(){
+        return Observable.defer(new Func0<Observable<Integer>>() {
+            @Override
+            public Observable<Integer> call() {
+                return Observable.just(1);
+            }
+        });
     }
 }
