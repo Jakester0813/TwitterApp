@@ -4,6 +4,8 @@
 
 Time spent: **X** hours spent in total
 
+Time spent: **X** hours spent in total
+
 ## User Stories
 
 The following **required** functionality is completed:

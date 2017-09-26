@@ -1,4 +1,4 @@
-package com.jakester.twitterapp;
+package com.jakester.twitterapp.activities;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.jakester.twitterapp.R;
 
 import rx.Observable;
 import rx.Subscriber;
