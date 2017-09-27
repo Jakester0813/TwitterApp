@@ -1,5 +1,6 @@
 package com.jakester.twitterapp.application;
 
+import com.jakester.twitterapp.network.RestClient;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowLog;
 import com.raizlabs.android.dbflow.config.FlowManager;

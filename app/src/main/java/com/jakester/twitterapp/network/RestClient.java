@@ -2,9 +2,12 @@ package com.jakester.twitterapp.network;
 
 import android.content.Context;
 
-import com.codepath.apps.restclienttemplate.R;import com.codepath.oauth.OAuthBaseClient;
+
+import com.codepath.oauth.OAuthBaseClient;
 import com.github.scribejava.apis.FlickrApi;
+import com.github.scribejava.apis.TwitterApi;
 import com.github.scribejava.core.builder.api.BaseApi;
+import com.jakester.twitterapp.R;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
@@ -21,10 +24,10 @@ import com.loopj.android.http.RequestParams;
  * 
  */
 public class RestClient extends OAuthBaseClient {
-	public static final BaseApi REST_API_INSTANCE = FlickrApi.instance(FlickrApi.FlickrPerm.WRITE); // Change this
-	public static final String REST_URL = "https://api.flickr.com/services"; // Change this, base API URL
-	public static final String REST_CONSUMER_KEY = "SOME_KEY";       // Change this
-	public static final String REST_CONSUMER_SECRET = "SOME_SECRET"; // Change this
+	public static final BaseApi REST_API_INSTANCE = TwitterApi.instance();
+	public static final String REST_URL = "https://api.twitter.com/1.1"; // Change this, base API URL
+	public static final String REST_CONSUMER_KEY = "kKUASTPcutl01JsIsI5srBkPD";       // Change this
+	public static final String REST_CONSUMER_SECRET = "hyxeKL3GJBLHacwIaDDMXzZWO06Am2ua6aj6v4aMHHnSF9qkxD"; // Change this
 
 	// Landing page to indicate the OAuth flow worked in case Chrome for Android 25+ blocks navigation back to the app.
 	public static final String FALLBACK_URL = "https://codepath.github.io/android-rest-client-template/success.html";
@@ -42,12 +45,20 @@ public class RestClient extends OAuthBaseClient {
 	}
 	// CHANGE THIS
 	// DEFINE METHODS for different API endpoints here
-	public void getInterestingnessList(AsyncHttpResponseHandler handler) {
-		String apiUrl = getApiUrl("?nojsoncallback=1&method=flickr.interestingness.getList");
+	public void getHomeTimeline(int page, AsyncHttpResponseHandler handler) {
+		String apiUrl = getApiUrl("statuses/home_timeline.json");
 		// Can specify query string params directly or through RequestParams.
 		RequestParams params = new RequestParams();
-		params.put("format", "json");
+		params.put("page", String.valueOf(page));
 		client.get(apiUrl, params, handler);
+	}
+
+	// RestClient.java
+	public void postTweet(String body, AsyncHttpResponseHandler handler) {
+		String apiUrl = getApiUrl("statuses/update.json");
+		RequestParams params = new RequestParams();
+		params.put("page", body);
+		getClient().post(apiUrl, params, handler);
 	}
 
 	/* 1. Define the endpoint URL with getApiUrl and pass a relative path to the endpoint

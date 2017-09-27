@@ -1,5 +1,6 @@
 package com.jakester.twitterapp.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -11,7 +12,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.jakester.twitterapp.R;
+import com.jakester.twitterapp.application.RestApplication;
+import com.jakester.twitterapp.models.Tweet;
+import com.jakester.twitterapp.network.RestClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
 
+import org.json.JSONArray;
+
+import java.util.ArrayList;
+
+import cz.msebera.android.httpclient.Header;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -22,6 +32,7 @@ import rx.schedulers.Schedulers;
 public class MainTwitterActivity extends AppCompatActivity {
 
     private Subscription subscription;
+    ArrayList<Tweet> tweets;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +49,19 @@ public class MainTwitterActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+        /*
+        RestClient client = RestApplication.getRestClient();
+        client.getHomeTimeline(1, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray json) {
+                // Response is automatically parsed into a JSONArray
+                tweets = Tweet.fromJson(json);
 
+
+            }
+        });
+
+        /*
         subscription = getIntObservable()
                 //
                 .subscribeOn(Schedulers.io())
@@ -63,6 +86,7 @@ public class MainTwitterActivity extends AppCompatActivity {
                 Log.d("I DID IT", integer.toString());
             }
         });
+        */
     }
 
     @Override
@@ -89,7 +113,9 @@ public class MainTwitterActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_login) {
+            Intent i = new Intent(this, LoginActivity.class);
+            startActivity(i);
             return true;
         }
 

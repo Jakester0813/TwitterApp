@@ -1,11 +1,15 @@
 package com.jakester.twitterapp.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Toast;
 
-import com.codepath.apps.restclienttemplate.R;import com.codepath.apps.restclienttemplate.RestClient;import com.codepath.oauth.OAuthLoginActionBarActivity;
-import com.codepath.oauth.OAuthLoginActivity;
+import com.codepath.oauth.OAuthLoginActionBarActivity;
+import com.jakester.twitterapp.R;
+import com.jakester.twitterapp.network.RestClient;
+
 
 public class LoginActivity extends OAuthLoginActionBarActivity<RestClient> {
 
@@ -27,8 +31,8 @@ public class LoginActivity extends OAuthLoginActionBarActivity<RestClient> {
 	// i.e Display application "homepage"
 	@Override
 	public void onLoginSuccess() {
-		// Intent i = new Intent(this, PhotosActivity.class);
-		// startActivity(i);
+		Intent i = new Intent(this, MainTwitterActivity.class);
+		startActivity(i);
 	}
 
 	// OAuth authentication flow failed, handle the error
@@ -43,6 +47,10 @@ public class LoginActivity extends OAuthLoginActionBarActivity<RestClient> {
 	// This should be tied to a button used to login
 	public void loginToRest(View view) {
 		getClient().connect();
+	}
+
+	public void forgotPassword(View view) {
+		Toast.makeText(this, "Oops, sorry, forgot that I can't do that!", Toast.LENGTH_LONG).show();
 	}
 
 }
