@@ -1,10 +1,13 @@
 <resources>
     <string name="app_name">TwitterApp</string>
     <string name="action_login">Log In</string>
+    <string name="action_logout">Log Out</string>
     <string name="login_text">Log in to Twitter</string>
     <string name="username_label">Username</string>
     <string name="password_label">Password</string>
     <string name="forgot_password">Forgot password?</string>
+    <string name="whats_happening">What\'s happening?</string>
+    <string name="tweet">Tweet</string>
     <string name="login_label">Log in</string>
     <string name="period">.</string>
     <string name="intent_scheme">oauth</string>

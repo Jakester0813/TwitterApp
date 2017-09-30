@@ -18,9 +18,11 @@ import com.github.scribejava.apis.TwitterApi;
 import com.jakester.twitterapp.R;
 import com.jakester.twitterapp.adapter.TweetAdapter;
 import com.jakester.twitterapp.application.TwitterApplication;
+import com.jakester.twitterapp.fragments.NewTweetDialogFragment;
 import com.jakester.twitterapp.listener.EndlessScrollListener;
 import com.jakester.twitterapp.managers.InternetManager;
 import com.jakester.twitterapp.models.Tweet;
+import com.jakester.twitterapp.models.User;
 import com.jakester.twitterapp.network.TwitterClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -34,7 +36,7 @@ import rx.Observable;
 import rx.Subscription;
 import rx.functions.Func0;
 
-public class HomeTimelineActivity extends AppCompatActivity {
+public class HomeTimelineActivity extends AppCompatActivity implements NewTweetDialogFragment.FilterDialogListener{
 
     private Subscription subscription;
     ArrayList<Tweet> tweets;
@@ -44,6 +46,8 @@ public class HomeTimelineActivity extends AppCompatActivity {
     private EndlessScrollListener scrollListener;
     AlertDialog noInternetDialog;
     private TwitterClient client;
+    MenuItem logIn, logOut;
+    User currentUser;
     boolean started;
 
 
@@ -136,8 +140,8 @@ public class HomeTimelineActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
         if(client.isAuthenticated() && InternetManager.getInstance(this).isInternetAvailable()) {
+            getUser();
             populateTimeline(0);
         }
         if(!InternetManager.getInstance(this).isInternetAvailable()){
@@ -158,10 +162,16 @@ public class HomeTimelineActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main_twitter, menu);
-        MenuItem logIn = menu.findItem(R.id.action_login);
-        if(client.isAuthenticated()){
+        logIn = menu.findItem(R.id.action_login);
+        logOut = menu.findItem(R.id.action_logout);
+        /*if(client.isAuthenticated()){
             logIn.setVisible(false);
+            logOut.setVisible(true);
         }
+        else {
+            logIn.setVisible(true);
+            logOut.setVisible(false);
+        }*/
         return true;
     }
 
@@ -176,6 +186,12 @@ public class HomeTimelineActivity extends AppCompatActivity {
         if (id == R.id.action_login) {
             Intent i = new Intent(this, LoginActivity.class);
             startActivity(i);
+            return true;
+        }
+
+        else if (id == R.id.action_logout) {
+            client.clearAccessToken();
+            logIn.setVisible(true);
             return true;
         }
 
@@ -213,6 +229,43 @@ public class HomeTimelineActivity extends AppCompatActivity {
                 throwable.printStackTrace();
             }
         });
+    }
+
+    public void getUser(){
+        client.getUser(new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                Log.d("OBJECT", response.toString());
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                Log.d("ARRAY", response.toString());
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Log.d("TwitterClient", errorResponse.toString());
+                throwable.printStackTrace();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                Log.d("TwitterClient", errorResponse.toString());
+                throwable.printStackTrace();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Log.d("TwitterClient", responseString);
+                throwable.printStackTrace();
+            }
+        });
+    }
+
+    @Override
+    public void onFinishFilterDialog(Tweet tweet) {
+        mAdapter.addTweet(tweet);
     }
 
     //Can incorporate Models into this, maybe as a way to incorporate Retrofit?

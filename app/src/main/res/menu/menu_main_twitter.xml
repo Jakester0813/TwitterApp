@@ -6,6 +6,12 @@
         android:id="@+id/action_login"
         android:orderInCategory="1"
         android:title="@string/action_login"
-        android:iconTint="@color/primaryTextColor"
-        app:showAsAction="ifRoom" />
+        android:iconTint="@android:color/white"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_logout"
+        android:orderInCategory="1"
+        android:title="@string/action_logout"
+        android:iconTint="@android:color/white"
+        app:showAsAction="never" />
 </menu>
