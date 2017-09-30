@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,6 +27,7 @@ import com.jakester.twitterapp.managers.InternetManager;
 import com.jakester.twitterapp.models.Tweet;
 import com.jakester.twitterapp.models.User;
 import com.jakester.twitterapp.network.TwitterClient;
+import com.jakester.twitterapp.util.TwitterContstants;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
@@ -92,8 +94,7 @@ public class HomeTimelineActivity extends AppCompatActivity implements NewTweetD
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                showNewTweetDialog();
             }
         });
 
@@ -277,6 +278,12 @@ public class HomeTimelineActivity extends AppCompatActivity implements NewTweetD
                 throwable.printStackTrace();
             }
         });
+    }
+
+    private void showNewTweetDialog() {
+        FragmentManager fm = this.getSupportFragmentManager();
+        NewTweetDialogFragment filterDialog = NewTweetDialogFragment.newInstance(TwitterContstants.COMPOSE_TWEET);
+        filterDialog.show(fm,TwitterContstants.FRAGMENT_TWEET);
     }
 
     @Override

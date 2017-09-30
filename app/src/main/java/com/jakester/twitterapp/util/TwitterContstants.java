@@ -11,6 +11,9 @@ public class TwitterContstants {
 
     public final String TWITTER_URL="https://api.twitter.com/1.1/statuses/home_timeline.json";
 
+    public static final String COMPOSE_TWEET = "Compose Tweet";
+    public static final String FRAGMENT_TWEET = "fragment_new_tweet";
+
     public static final String NETWORK_EXEC = "/system/bin/ping -c 1 8.8.8.8";
 
     public static final String NO_INTERNET_TITLE = "No Internet";
