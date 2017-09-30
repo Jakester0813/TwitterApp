@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TwitterApp</string>
+    <string name="app_name">Home</string>
     <string name="action_login">Log In</string>
     <string name="action_logout">Log Out</string>
     <string name="login_text">Log in to Twitter</string>

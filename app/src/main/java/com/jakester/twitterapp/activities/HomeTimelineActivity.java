@@ -13,7 +13,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.github.scribejava.apis.TwitterApi;
 import com.jakester.twitterapp.R;
 import com.jakester.twitterapp.adapter.TweetAdapter;
@@ -27,11 +29,13 @@ import com.jakester.twitterapp.network.TwitterClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
+import de.hdodenhof.circleimageview.CircleImageView;
 import rx.Observable;
 import rx.Subscription;
 import rx.functions.Func0;
@@ -44,6 +48,8 @@ public class HomeTimelineActivity extends AppCompatActivity implements NewTweetD
     RecyclerView mTweetRecycler;
     LinearLayoutManager mManager;
     private EndlessScrollListener scrollListener;
+    CircleImageView mProfilePhoto;
+    ImageView mLogo;
     AlertDialog noInternetDialog;
     private TwitterClient client;
     MenuItem logIn, logOut;
@@ -57,10 +63,12 @@ public class HomeTimelineActivity extends AppCompatActivity implements NewTweetD
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_timeline);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(null);
         setSupportActionBar(toolbar);
-
+        getSupportActionBar().setTitle(null);
         started = true;
-
+        mLogo = (ImageView) findViewById(R.id.iv_logo);
+        mProfilePhoto = (CircleImageView) findViewById(R.id.iv_profile_image);
         mTweetRecycler = (RecyclerView) findViewById(R.id.rv_tweets);
         mManager = new LinearLayoutManager(this);
         mManager.setReverseLayout(true);
@@ -235,7 +243,15 @@ public class HomeTimelineActivity extends AppCompatActivity implements NewTweetD
         client.getUser(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                Log.d("OBJECT", response.toString());
+                try {
+                    currentUser = User.fromJSON(response);
+                    Glide.with(HomeTimelineActivity.this).load(currentUser.profileImageURL).into(mProfilePhoto);
+                    mLogo.setVisibility(View.GONE);
+                    mProfilePhoto.setVisibility(View.VISIBLE);
+                }
+                catch (JSONException e){
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -266,6 +282,7 @@ public class HomeTimelineActivity extends AppCompatActivity implements NewTweetD
     @Override
     public void onFinishFilterDialog(Tweet tweet) {
         mAdapter.addTweet(tweet);
+        mTweetRecycler.scrollToPosition(0);
     }
 
     //Can incorporate Models into this, maybe as a way to incorporate Retrofit?
