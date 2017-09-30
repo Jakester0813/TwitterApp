@@ -23,19 +23,19 @@ import com.loopj.android.http.RequestParams;
  * NOTE: You may want to rename this object based on the service i.e TwitterClient or FlickrClient
  * 
  */
-public class RestClient extends OAuthBaseClient {
+public class TwitterClient extends OAuthBaseClient {
 	public static final BaseApi REST_API_INSTANCE = TwitterApi.instance();
 	public static final String REST_URL = "https://api.twitter.com/1.1"; // Change this, base API URL
 	public static final String REST_CONSUMER_KEY = "kKUASTPcutl01JsIsI5srBkPD";       // Change this
 	public static final String REST_CONSUMER_SECRET = "hyxeKL3GJBLHacwIaDDMXzZWO06Am2ua6aj6v4aMHHnSF9qkxD"; // Change this
 
 	// Landing page to indicate the OAuth flow worked in case Chrome for Android 25+ blocks navigation back to the app.
-	public static final String FALLBACK_URL = "https://codepath.github.io/android-rest-client-template/success.html";
+	public static final String FALLBACK_URL = "http://codepath.github.io/android-rest-client-template/success.html";
 
 	// See https://developer.chrome.com/multidevice/android/intents
 	public static final String REST_CALLBACK_URL_TEMPLATE = "intent://%s#Intent;action=android.intent.action.VIEW;scheme=%s;package=%s;S.browser_fallback_url=%s;end";
 
-	public RestClient(Context context) {
+	public TwitterClient(Context context) {
 		super(context, REST_API_INSTANCE,
 				REST_URL,
 				REST_CONSUMER_KEY,
@@ -49,11 +49,12 @@ public class RestClient extends OAuthBaseClient {
 		String apiUrl = getApiUrl("statuses/home_timeline.json");
 		// Can specify query string params directly or through RequestParams.
 		RequestParams params = new RequestParams();
+		params.put("count",25);
 		params.put("page", String.valueOf(page));
 		client.get(apiUrl, params, handler);
 	}
 
-	// RestClient.java
+	// TwitterClient.java
 	public void postTweet(String body, AsyncHttpResponseHandler handler) {
 		String apiUrl = getApiUrl("statuses/update.json");
 		RequestParams params = new RequestParams();

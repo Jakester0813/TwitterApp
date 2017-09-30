@@ -5,41 +5,54 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.github.scribejava.apis.TwitterApi;
 import com.jakester.twitterapp.R;
-import com.jakester.twitterapp.application.RestApplication;
+import com.jakester.twitterapp.adapter.TweetAdapter;
+import com.jakester.twitterapp.application.TwitterApplication;
 import com.jakester.twitterapp.models.Tweet;
-import com.jakester.twitterapp.network.RestClient;
+import com.jakester.twitterapp.network.TwitterClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func0;
-import rx.schedulers.Schedulers;
 
-public class MainTwitterActivity extends AppCompatActivity {
+public class HomeTimelineActivity extends AppCompatActivity {
 
     private Subscription subscription;
     ArrayList<Tweet> tweets;
+    TweetAdapter mAdapter;
+    RecyclerView mTweetRecycler;
+    LinearLayoutManager mManager;
+
+    private TwitterClient client;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_twitter);
+        setContentView(R.layout.activity_home_timeline);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        mTweetRecycler = (RecyclerView) findViewById(R.id.rv_tweets);
+        mManager = new LinearLayoutManager(this);
+        mTweetRecycler.setLayoutManager(mManager);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -49,8 +62,10 @@ public class MainTwitterActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        client = TwitterApplication.getRestClient();
         /*
-        RestClient client = RestApplication.getRestClient();
+        TwitterClient client = TwitterApplication.getRestClient();
         client.getHomeTimeline(1, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray json) {
@@ -90,18 +105,31 @@ public class MainTwitterActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        if(client.isAuthenticated()) {
+            populateTimeline();
+        }
+    }
+
+    @Override
     protected void onDestroy(){
         super.onDestroy();
         //This is essential as it prevents a memory leak
-        if(subscription != null && !subscription.isUnsubscribed()){
-            subscription.unsubscribe();
-        }
+        //if(subscription != null && !subscription.isUnsubscribed()){
+        //    subscription.unsubscribe();
+        //}
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main_twitter, menu);
+        MenuItem logIn = menu.findItem(R.id.action_login);
+        if(client.isAuthenticated()){
+            logIn.setVisible(false);
+        }
         return true;
     }
 
@@ -120,6 +148,39 @@ public class MainTwitterActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void populateTimeline(){
+        client.getHomeTimeline(0, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                Log.d("OBJECT", response.toString());
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                mAdapter = new TweetAdapter(HomeTimelineActivity.this, Tweet.fromJson(response));
+                mTweetRecycler.setAdapter(mAdapter);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Log.d("TwitterClient", errorResponse.toString());
+                throwable.printStackTrace();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                Log.d("TwitterClient", errorResponse.toString());
+                throwable.printStackTrace();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Log.d("TwitterClient", responseString);
+                throwable.printStackTrace();
+            }
+        });
     }
 
     //Can incorporate Models into this, maybe as a way to incorporate Retrofit?

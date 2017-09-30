@@ -8,10 +8,10 @@ import android.widget.Toast;
 
 import com.codepath.oauth.OAuthLoginActionBarActivity;
 import com.jakester.twitterapp.R;
-import com.jakester.twitterapp.network.RestClient;
+import com.jakester.twitterapp.network.TwitterClient;
 
 
-public class LoginActivity extends OAuthLoginActionBarActivity<RestClient> {
+public class LoginActivity extends OAuthLoginActionBarActivity<TwitterClient> {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +31,7 @@ public class LoginActivity extends OAuthLoginActionBarActivity<RestClient> {
 	// i.e Display application "homepage"
 	@Override
 	public void onLoginSuccess() {
-		Intent i = new Intent(this, MainTwitterActivity.class);
+		Intent i = new Intent(this, HomeTimelineActivity.class);
 		startActivity(i);
 	}
 
@@ -46,7 +46,9 @@ public class LoginActivity extends OAuthLoginActionBarActivity<RestClient> {
 	// Uses the client to initiate OAuth authorization
 	// This should be tied to a button used to login
 	public void loginToRest(View view) {
-		getClient().connect();
+
+        getClient().setRequestIntentFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getClient().connect();
 	}
 
 	public void forgotPassword(View view) {
