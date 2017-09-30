@@ -1,5 +1,6 @@
 package com.jakester.twitterapp.activities;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -17,6 +18,8 @@ import com.github.scribejava.apis.TwitterApi;
 import com.jakester.twitterapp.R;
 import com.jakester.twitterapp.adapter.TweetAdapter;
 import com.jakester.twitterapp.application.TwitterApplication;
+import com.jakester.twitterapp.listener.EndlessScrollListener;
+import com.jakester.twitterapp.managers.InternetManager;
 import com.jakester.twitterapp.models.Tweet;
 import com.jakester.twitterapp.network.TwitterClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -38,8 +41,10 @@ public class HomeTimelineActivity extends AppCompatActivity {
     TweetAdapter mAdapter;
     RecyclerView mTweetRecycler;
     LinearLayoutManager mManager;
-
+    private EndlessScrollListener scrollListener;
+    AlertDialog noInternetDialog;
     private TwitterClient client;
+    boolean started;
 
 
 
@@ -50,9 +55,26 @@ public class HomeTimelineActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        started = true;
+
         mTweetRecycler = (RecyclerView) findViewById(R.id.rv_tweets);
         mManager = new LinearLayoutManager(this);
+        mManager.setReverseLayout(true);
         mTweetRecycler.setLayoutManager(mManager);
+        scrollListener = new EndlessScrollListener(mManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to the bottom of the list
+                if(InternetManager.getInstance(HomeTimelineActivity.this).isInternetAvailable()) {
+                    populateTimeline(page+1);
+                }
+                else{
+                    noInternetDialog.show();
+                }
+            }
+        };
+        mTweetRecycler.addOnScrollListener(scrollListener);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -63,7 +85,14 @@ public class HomeTimelineActivity extends AppCompatActivity {
             }
         });
 
+        mAdapter = new TweetAdapter(HomeTimelineActivity.this);
+        mTweetRecycler.setAdapter(mAdapter);
+
         client = TwitterApplication.getRestClient();
+
+        noInternetDialog = InternetManager.getInstance(this).noInternetDialog();
+
+
         /*
         TwitterClient client = TwitterApplication.getRestClient();
         client.getHomeTimeline(1, new JsonHttpResponseHandler() {
@@ -108,8 +137,11 @@ public class HomeTimelineActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        if(client.isAuthenticated()) {
-            populateTimeline();
+        if(client.isAuthenticated() && InternetManager.getInstance(this).isInternetAvailable()) {
+            populateTimeline(0);
+        }
+        if(!InternetManager.getInstance(this).isInternetAvailable()){
+            noInternetDialog.show();
         }
     }
 
@@ -150,8 +182,8 @@ public class HomeTimelineActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void populateTimeline(){
-        client.getHomeTimeline(0, new JsonHttpResponseHandler() {
+    public void populateTimeline(int page){
+        client.getHomeTimeline(page, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 Log.d("OBJECT", response.toString());
@@ -159,8 +191,8 @@ public class HomeTimelineActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                mAdapter = new TweetAdapter(HomeTimelineActivity.this, Tweet.fromJson(response));
-                mTweetRecycler.setAdapter(mAdapter);
+                ArrayList<Tweet> tweets =  Tweet.fromJson(response);
+                mAdapter.addTweets(tweets);
             }
 
             @Override

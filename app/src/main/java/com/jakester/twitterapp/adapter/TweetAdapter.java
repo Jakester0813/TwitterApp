@@ -23,9 +23,14 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewhol
     Context mContext;
     ArrayList<Tweet> mTweets;
 
-    public TweetAdapter(Context context, ArrayList<Tweet> pTweets) {
-        mContext = context;
-        mTweets = pTweets;
+    public TweetAdapter(Context context) {
+        this.mContext = context;
+        this.mTweets = new ArrayList<Tweet>();
+    }
+
+    public void addTweets(ArrayList<Tweet> tweets){
+        this.mTweets.addAll(tweets);
+        notifyDataSetChanged();
     }
 
     @Override
@@ -49,19 +54,22 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewhol
     public class TweetViewholder extends RecyclerView.ViewHolder {
 
         public ImageView mProfileImage;
-        public TextView mUserName;
-        public TextView mBody;
+        public TextView mUserName, mUserHandle, mTimeStamp, mBody;
 
         public TweetViewholder(View itemView) {
             super(itemView);
             this.mProfileImage = (ImageView) itemView.findViewById(R.id.iv_profile_image);
             this.mUserName = (TextView) itemView.findViewById(R.id.tv_username);
+            this.mUserHandle = (TextView) itemView.findViewById(R.id.tv_user_handle);
+            this.mTimeStamp = (TextView) itemView.findViewById(R.id.tv_time_stamp);
             this.mBody = (TextView) itemView.findViewById(R.id.tv_tweet_body);
         }
 
         public void bind(Tweet tweet){
             Glide.with(mContext).load(tweet.getUserImageUrl()).into(mProfileImage);
             this.mUserName.setText(tweet.getUserName());
+            this.mUserHandle.setText(tweet.getUserHandle());
+            this.mTimeStamp.setText(tweet.getTimestamp());
             this.mBody.setText(tweet.getTweet());
         }
 

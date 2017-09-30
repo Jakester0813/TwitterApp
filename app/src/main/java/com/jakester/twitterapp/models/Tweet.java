@@ -10,8 +10,13 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcel;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /*
@@ -23,6 +28,7 @@ import java.util.List;
  * 
  */
 @Table(database = MyDatabase.class)
+@Parcel
 public class Tweet extends BaseModel {
 
 	@PrimaryKey
@@ -65,7 +71,13 @@ public class Tweet extends BaseModel {
 		super();
 
 		try {
-			this.timestamp = object.getString("created_at");
+			try {
+				this.timestamp = calculateTimeStamp(object.getString("created_at"));
+			}
+			catch (ParseException e) {
+				e.printStackTrace();
+				this.timestamp = "I AM ERROR";
+			}
 			User user = User.fromJSON(object.getJSONObject("user"));
 			this.userImage = user.getProfileImage();
 			this.userName = user.getName();
@@ -103,6 +115,29 @@ public class Tweet extends BaseModel {
 		}
 
 		return tweets;
+	}
+
+	public String calculateTimeStamp(String timeStamp) throws ParseException {
+		String stringArr = timeStamp.replace("+0000","");
+		stringArr = stringArr.replace("  "," ");
+		DateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy");
+		Date d1 = df.parse(stringArr);
+		Date d2 = new Date();
+		long diff = d2.getTime() - d1.getTime();
+		long diffInMilliseconds = Math.abs(d1.getTime() - d2.getTime());
+		long diffSeconds = diffInMilliseconds /1000;
+		if(diffSeconds < 60){
+			return Long.toString(diffSeconds) + "s";
+		}
+		else if((diffSeconds/60) < 60){
+			return Long.toString(diffSeconds/60) + "m";
+		}
+		else if((diffSeconds/(60*60))< 24){
+			return Long.toString(diffSeconds/(60*60)) + "h";
+		}
+		else{
+			return Long.toString(diffSeconds/(24 * 60 * 60)) + "d";
+		}
 	}
 
 	public String getTimestamp(){
