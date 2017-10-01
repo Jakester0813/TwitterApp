@@ -52,7 +52,6 @@ public class HomeTimelineActivity extends AppCompatActivity implements NewTweetD
     LinearLayoutManager mManager;
     private EndlessScrollListener scrollListener;
     CircleImageView mProfilePhoto;
-    ImageView mLogo;
     AlertDialog noInternetDialog;
     private TwitterClient client;
     User currentUser;
@@ -69,7 +68,6 @@ public class HomeTimelineActivity extends AppCompatActivity implements NewTweetD
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(null);
         started = true;
-        mLogo = (ImageView) findViewById(R.id.iv_logo);
         mProfilePhoto = (CircleImageView) findViewById(R.id.iv_profile_image);
         mTweetRecycler = (RecyclerView) findViewById(R.id.rv_tweets);
         mManager = new LinearLayoutManager(this);
@@ -173,7 +171,6 @@ public class HomeTimelineActivity extends AppCompatActivity implements NewTweetD
             // Extract name value from result extras
             currentUser = (User) Parcels.unwrap(data.getParcelableExtra("user"));
             Glide.with(this).load(currentUser.getProfileImage()).into(mProfilePhoto);
-            mLogo.setVisibility(View.GONE);
             mProfilePhoto.setVisibility(View.VISIBLE);
         }
     }
@@ -218,7 +215,6 @@ public class HomeTimelineActivity extends AppCompatActivity implements NewTweetD
                 try {
                     currentUser = User.fromJSON(response);
                     Glide.with(HomeTimelineActivity.this).load(currentUser.profileImageURL).into(mProfilePhoto);
-                    mLogo.setVisibility(View.GONE);
                     mProfilePhoto.setVisibility(View.VISIBLE);
                 }
                 catch (JSONException e){

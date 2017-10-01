@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.jakester.twitterapp.R;
+import com.jakester.twitterapp.customwidgets.LinkifiedTextView;
 import com.jakester.twitterapp.models.Tweet;
 
 import java.util.ArrayList;
@@ -59,7 +60,8 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewhol
     public class TweetViewholder extends RecyclerView.ViewHolder {
 
         public ImageView mProfileImage;
-        public TextView mUserName, mUserHandle, mTimeStamp, mBody;
+        public TextView mUserName, mUserHandle, mTimeStamp;
+        public LinkifiedTextView mBody;
 
         public TweetViewholder(View itemView) {
             super(itemView);
@@ -67,7 +69,7 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewhol
             this.mUserName = (TextView) itemView.findViewById(R.id.tv_username);
             this.mUserHandle = (TextView) itemView.findViewById(R.id.tv_user_handle);
             this.mTimeStamp = (TextView) itemView.findViewById(R.id.tv_time_stamp);
-            this.mBody = (TextView) itemView.findViewById(R.id.tv_tweet_body);
+            this.mBody = (LinkifiedTextView) itemView.findViewById(R.id.tv_tweet_body);
         }
 
         public void bind(Tweet tweet){

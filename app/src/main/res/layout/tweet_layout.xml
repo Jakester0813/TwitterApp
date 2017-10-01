@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:descendantFocusability="blocksDescendants"
     android:background="@android:color/white">
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -64,18 +65,19 @@
             android:layout_marginStart="4dp"
             android:layout_weight="1"
             android:textColor="@color/secondaryTextColor"
-            android:text="TextView"
             android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/tv_seperator" />
 
-        <TextView
+        <com.jakester.twitterapp.customwidgets.LinkifiedTextView
             android:id="@+id/tv_tweet_body"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/primaryTextColor"
             android:layout_marginStart="8dp"
             android:layout_weight="1"
-            android:text="TextView"
+            android:autoLink="all"
+            android:linksClickable="true"
+            android:textColorLink="@color/colorAccent"
             android:layout_toEndOf="@+id/iv_profile_image"
             android:layout_below="@+id/tv_username" />
 
