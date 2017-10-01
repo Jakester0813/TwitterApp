@@ -7,7 +7,7 @@ import org.parceler.Parcel;
 /**
  * Created by Jake on 9/28/2017.
  */
-@Parcel
+@Parcel(analyze={User.class})
 public class User {
 
     public String name;

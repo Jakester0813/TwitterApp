@@ -28,7 +28,7 @@ import java.util.List;
  * 
  */
 @Table(database = MyDatabase.class)
-@Parcel
+@Parcel(analyze={Tweet.class})
 public class Tweet extends BaseModel {
 
 	@PrimaryKey
@@ -61,9 +61,17 @@ public class Tweet extends BaseModel {
 	boolean retweeted;
 
 
-
-	public Tweet() {
+	public Tweet(){
 		super();
+	}
+
+	public Tweet(User pUser, String pTweet) {
+		super();
+		this.timestamp = "0s";
+		this.userImage = pUser.getProfileImage();
+		this.userName = pUser.getName();
+		this.userHandle = pUser.getScreenName();
+		this.body = pTweet;
 	}
 
 	// Add a constructor that creates an object from the JSON response

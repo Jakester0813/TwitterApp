@@ -33,6 +33,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 
@@ -54,7 +55,6 @@ public class HomeTimelineActivity extends AppCompatActivity implements NewTweetD
     ImageView mLogo;
     AlertDialog noInternetDialog;
     private TwitterClient client;
-    MenuItem logIn, logOut;
     User currentUser;
     boolean started;
 
@@ -73,7 +73,6 @@ public class HomeTimelineActivity extends AppCompatActivity implements NewTweetD
         mProfilePhoto = (CircleImageView) findViewById(R.id.iv_profile_image);
         mTweetRecycler = (RecyclerView) findViewById(R.id.rv_tweets);
         mManager = new LinearLayoutManager(this);
-        mManager.setReverseLayout(true);
         mTweetRecycler.setLayoutManager(mManager);
         scrollListener = new EndlessScrollListener(mManager) {
             @Override
@@ -168,43 +167,15 @@ public class HomeTimelineActivity extends AppCompatActivity implements NewTweetD
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main_twitter, menu);
-        logIn = menu.findItem(R.id.action_login);
-        logOut = menu.findItem(R.id.action_logout);
-        /*if(client.isAuthenticated()){
-            logIn.setVisible(false);
-            logOut.setVisible(true);
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // REQUEST_CODE is defined above
+        if (resultCode == RESULT_OK && requestCode == 100) {
+            // Extract name value from result extras
+            currentUser = (User) Parcels.unwrap(data.getParcelableExtra("user"));
+            Glide.with(this).load(currentUser.getProfileImage()).into(mProfilePhoto);
+            mLogo.setVisibility(View.GONE);
+            mProfilePhoto.setVisibility(View.VISIBLE);
         }
-        else {
-            logIn.setVisible(true);
-            logOut.setVisible(false);
-        }*/
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_login) {
-            Intent i = new Intent(this, LoginActivity.class);
-            startActivity(i);
-            return true;
-        }
-
-        else if (id == R.id.action_logout) {
-            client.clearAccessToken();
-            logIn.setVisible(true);
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     public void populateTimeline(int page){
@@ -283,11 +254,43 @@ public class HomeTimelineActivity extends AppCompatActivity implements NewTweetD
     private void showNewTweetDialog() {
         FragmentManager fm = this.getSupportFragmentManager();
         NewTweetDialogFragment filterDialog = NewTweetDialogFragment.newInstance(TwitterContstants.COMPOSE_TWEET);
+        Bundle args = new Bundle();
+        args.putParcelable("user", Parcels.wrap(currentUser));
+        filterDialog.setArguments(args);
         filterDialog.show(fm,TwitterContstants.FRAGMENT_TWEET);
     }
 
     @Override
     public void onFinishFilterDialog(Tweet tweet) {
+        client.postTweet(tweet.getTweet(), new JsonHttpResponseHandler(){
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                Log.d("OBJECT", response.toString());
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                Log.d("ARRAY", response.toString());
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Log.d("TwitterClient", errorResponse.toString());
+                throwable.printStackTrace();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                Log.d("TwitterClient", errorResponse.toString());
+                throwable.printStackTrace();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Log.d("TwitterClient", responseString);
+                throwable.printStackTrace();
+            }
+        });
         mAdapter.addTweet(tweet);
         mTweetRecycler.scrollToPosition(0);
     }

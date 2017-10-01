@@ -2,20 +2,38 @@ package com.jakester.twitterapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.codepath.oauth.OAuthLoginActionBarActivity;
 import com.jakester.twitterapp.R;
+import com.jakester.twitterapp.application.TwitterApplication;
+import com.jakester.twitterapp.models.User;
 import com.jakester.twitterapp.network.TwitterClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.parceler.Parcels;
+
+import cz.msebera.android.httpclient.Header;
 
 
 public class LoginActivity extends OAuthLoginActionBarActivity<TwitterClient> {
 
+	TwitterClient mClient;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		mClient = TwitterApplication.getRestClient();
+		if(mClient.isAuthenticated()){
+			onLoginSuccess();
+		}
 		setContentView(R.layout.activity_login);
 	}
 
@@ -31,7 +49,7 @@ public class LoginActivity extends OAuthLoginActionBarActivity<TwitterClient> {
 	// i.e Display application "homepage"
 	@Override
 	public void onLoginSuccess() {
-		Intent i = new Intent(this, HomeTimelineActivity.class);
+		Intent i = new Intent(LoginActivity.this, HomeTimelineActivity.class);
 		startActivity(i);
 	}
 
@@ -39,6 +57,7 @@ public class LoginActivity extends OAuthLoginActionBarActivity<TwitterClient> {
 	// i.e Display an error dialog or toast
 	@Override
 	public void onLoginFailure(Exception e) {
+
 		e.printStackTrace();
 	}
 
@@ -47,8 +66,8 @@ public class LoginActivity extends OAuthLoginActionBarActivity<TwitterClient> {
 	// This should be tied to a button used to login
 	public void loginToRest(View view) {
 
-        getClient().setRequestIntentFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        getClient().connect();
+		mClient.setRequestIntentFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		mClient.connect();
 	}
 
 	public void forgotPassword(View view) {
