@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -50,6 +51,8 @@ public class HomeTimelineActivity extends AppCompatActivity implements NewTweetD
     TweetAdapter mAdapter;
     RecyclerView mTweetRecycler;
     LinearLayoutManager mManager;
+    private SwipeRefreshLayout swipeContainer;
+
     private EndlessScrollListener scrollListener;
     CircleImageView mProfilePhoto;
     AlertDialog noInternetDialog;
@@ -78,7 +81,7 @@ public class HomeTimelineActivity extends AppCompatActivity implements NewTweetD
                 // Triggered only when new data needs to be appended to the list
                 // Add whatever code is needed to append new items to the bottom of the list
                 if(InternetManager.getInstance(HomeTimelineActivity.this).isInternetAvailable()) {
-                    populateTimeline(page+1);
+                    populateTimeline(page+1, false);
                 }
                 else{
                     noInternetDialog.show();
@@ -86,6 +89,24 @@ public class HomeTimelineActivity extends AppCompatActivity implements NewTweetD
             }
         };
         mTweetRecycler.addOnScrollListener(scrollListener);
+
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.srl_swipe_container);
+        // Setup refresh listener which triggers new data loading
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Your code to refresh the list here.
+                // Make sure you call swipeContainer.setRefreshing(false)
+                // once the network request has completed successfully.
+                populateTimeline(0, true);
+            }
+        });
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(R.color.colorAccent,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_blue_bright);
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -148,7 +169,7 @@ public class HomeTimelineActivity extends AppCompatActivity implements NewTweetD
         super.onResume();
         if(client.isAuthenticated() && InternetManager.getInstance(this).isInternetAvailable()) {
             getUser();
-            populateTimeline(0);
+            populateTimeline(0, false);
         }
         if(!InternetManager.getInstance(this).isInternetAvailable()){
             noInternetDialog.show();
@@ -164,18 +185,7 @@ public class HomeTimelineActivity extends AppCompatActivity implements NewTweetD
         //}
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // REQUEST_CODE is defined above
-        if (resultCode == RESULT_OK && requestCode == 100) {
-            // Extract name value from result extras
-            currentUser = (User) Parcels.unwrap(data.getParcelableExtra("user"));
-            Glide.with(this).load(currentUser.getProfileImage()).into(mProfilePhoto);
-            mProfilePhoto.setVisibility(View.VISIBLE);
-        }
-    }
-
-    public void populateTimeline(int page){
+    public void populateTimeline(int page, final boolean refresh){
         client.getHomeTimeline(page, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -185,7 +195,12 @@ public class HomeTimelineActivity extends AppCompatActivity implements NewTweetD
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 ArrayList<Tweet> tweets =  Tweet.fromJson(response);
+                if(refresh){
+                    mAdapter.clear();
+                }
                 mAdapter.addTweets(tweets);
+                swipeContainer.setRefreshing(false);
+
             }
 
             @Override

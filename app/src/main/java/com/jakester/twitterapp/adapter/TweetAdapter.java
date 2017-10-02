@@ -39,6 +39,12 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewhol
         notifyItemChanged(0,tweet);
     }
 
+    public void clear() {
+        this.mTweets.clear();
+        notifyDataSetChanged();
+    }
+
+
     @Override
     public TweetViewholder onCreateViewHolder(ViewGroup parent, int viewType) {
         View viewholder = null;
