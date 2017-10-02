@@ -30,6 +30,7 @@ import com.jakester.twitterapp.models.User;
 import com.jakester.twitterapp.network.TwitterClient;
 import com.jakester.twitterapp.util.TwitterContstants;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -172,7 +173,10 @@ public class HomeTimelineActivity extends AppCompatActivity implements NewTweetD
             populateTimeline(0, false);
         }
         if(!InternetManager.getInstance(this).isInternetAvailable()){
-            noInternetDialog.show();
+            ArrayList<Tweet> tweets = (ArrayList<Tweet>) SQLite.select()
+                    .from(Tweet.class).queryList();
+            mAdapter.addTweets(tweets);
+            swipeContainer.setRefreshing(false);
         }
     }
 
