@@ -16,8 +16,11 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 
 /*
  * This is a temporary, sample model that demonstrates the basic structure
@@ -37,6 +40,8 @@ public class Tweet extends BaseModel {
 	// Define table fields
 	@Column
 	String timestamp;
+	@Column
+	String timestampDetail;
 	@Column
 	String userImage;
 	@Column
@@ -68,6 +73,13 @@ public class Tweet extends BaseModel {
 	public Tweet(User pUser, String pTweet) {
 		super();
 		this.timestamp = "0s";
+		try {
+			this.timestampDetail = setTimeStampDetail(new Date().toString());
+		}
+		catch (ParseException e) {
+			e.printStackTrace();
+			this.timestampDetail = "I AM ALSO ERROR";
+		}
 		this.userImage = pUser.getProfileImage();
 		this.userName = pUser.getName();
 		this.userHandle = pUser.getScreenName();
@@ -81,10 +93,12 @@ public class Tweet extends BaseModel {
 		try {
 			try {
 				this.timestamp = calculateTimeStamp(object.getString("created_at"));
+				this.timestampDetail = setTimeStampDetail(object.getString("created_at"));
 			}
 			catch (ParseException e) {
 				e.printStackTrace();
 				this.timestamp = "I AM ERROR";
+				this.timestampDetail = "I AM ALSO ERROR";
 			}
 			User user = User.fromJSON(object.getJSONObject("user"));
 			this.userImage = user.getProfileImage();
@@ -148,8 +162,32 @@ public class Tweet extends BaseModel {
 		}
 	}
 
+	public String setTimeStampDetail(String stamp) throws ParseException{
+		String stringArr = stamp.replace("+0000","");
+		String fOne = "EEE MMM dd HH:mm:ss yyyy";
+		String fTwo = "HH:mm a dd MMM yy";
+		SimpleDateFormat df = new SimpleDateFormat(fOne);
+		Date d1 = df.parse(stringArr);
+		df.applyPattern(fTwo);
+		return df.format(d1);
+	}
+
+	public String setTimeStampDetailNewTweet(){
+		Calendar cal = Calendar.getInstance();
+		StringBuilder sb = new StringBuilder(cal.get(Calendar.HOUR));
+		sb.append(":").append(cal.get(Calendar.MINUTE)).append(" ").append(cal.get(Calendar.AM_PM))
+				.append(" ").append(cal.get(Calendar.DAY_OF_MONTH)).append(" ")
+				.append(cal.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault()))
+				.append(cal.getDisplayName(Calendar.YEAR, Calendar.SHORT, Locale.getDefault()));
+		return sb.toString();
+	}
+
 	public String getTimestamp(){
 		return timestamp;
+	}
+
+	public String getTimestampDetail(){
+		return timestampDetail;
 	}
 
 	public String getUserImageUrl(){
@@ -179,4 +217,6 @@ public class Tweet extends BaseModel {
 	public String getDisplayUrl(){
 		return displayUrl;
 	}
+
+	public int getFavoritedCount() { return favoritedCount; }
 }
