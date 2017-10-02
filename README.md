@@ -2,9 +2,7 @@
 
 **TwitterApp** is an android app that allows a user to view his Twitter timeline and post a new tweet. The app utilizes [Twitter REST API](https://dev.twitter.com/rest/public).
 
-Time spent: **X** hours spent in total
-
-Time spent: **X** hours spent in total
+Time spent: **35** hours spent in total
 
 ## User Stories
 
@@ -54,13 +52,13 @@ The following **additional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='https://i.imgur.com/z7KJbKb.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 ## Notes
 
-Describe any challenges encountered while building the app.
+Learning the OAuth aspect of the app was a challenge for me. Once I figured out how the flow is supposed to work, it because much easier to manage.
 
 ## Open-source libraries used
 
