@@ -1,8 +1,8 @@
-# Project 3 - *TwitterApp*
+# Project 4 - *TwitterApp*
 
-**TwitterApp** is an android app that allows a user to view his Twitter timeline and post a new tweet. The app utilizes [Twitter REST API](https://dev.twitter.com/rest/public).
+**TwitterApp** is an android app that allows a user to view home and mentions timelines, view user profiles with user timelines, as well as compose and post a new tweet. The app utilizes [Twitter REST API](https://developer.twitter.com/en/docs/api-reference-index).
 
-Time spent: **35** hours spent in total
+Time spent: **x** hours spent in total
 
 ## User Stories
 
@@ -18,6 +18,15 @@ The following **required** functionality is completed:
   * [x] User can click a “Compose” icon in the Action Bar on the top right
   * [x] User can then enter a new tweet and post this to twitter
   * [x] User is taken back to home timeline with **new tweet visible** in timeline
+* [ ] User can **switch between Timeline and Mention views using tabs**
+  * [ ] User can view their home timeline tweets.
+  * [ ] User can view the recent mentions of their username.
+* [ ] User can navigate to **view their own profile**
+  * [ ] User can see picture, tagline, # of followers, # of following, and tweets on their profile.
+* [ ] User can **click on the profile image** in any tweet to see **another user's** profile.
+ * [ ] User can see picture, tagline, # of followers, # of following, and tweets of clicked user.
+ * [ ] Profile view includes that user's timeline
+* [ ] User can [infinitely paginate](http://guides.codepath.com/android/Endless-Scrolling-with-AdapterViews-and-RecyclerView) any of these timelines (home, mentions, user) by scrolling to the bottom
 
 The following **optional** features are implemented:
 
@@ -27,6 +36,15 @@ The following **optional** features are implemented:
 * [x] User can **open the twitter app offline and see last loaded tweets**. Persisted in SQLite tweets are refreshed on every application launch. While "live data" is displayed when app can get it from Twitter API, it is also saved for use in offline mode.
 * [x] User can tap a tweet to **open a detailed tweet view**
 * [ ] User can **select "reply" from detail view to respond to a tweet**
+* [ ] User can view following / followers list through the profile
+* [x] Implements robust error handling, [check if internet is available](http://guides.codepath.com/android/Sending-and-Managing-Network-Requests#checking-for-network-connectivity), handle error cases, network failures
+* [ ] When a network request is sent, user sees an [indeterminate progress indicator](http://guides.codepath.com/android/Handling-ProgressBars#progress-within-actionbar)
+* [ ] User can **"reply" to any tweet on their home timeline**
+  * [ ] The user that wrote the original tweet is automatically "@" replied in compose
+* [ ] User can click on a tweet to be **taken to a "detail view"** of that tweet
+ * [ ] User can take favorite (and unfavorite) or retweet actions on a tweet
+* [ ] User can **search for tweets matching a particular query** and see results
+* [ ] Usernames and hashtags are styled and clickable within tweets [using clickable spans](http://guides.codepath.com/android/Working-with-the-TextView#creating-clickable-styled-spans)
 
 
 The following **bonus** features are implemented:
@@ -43,6 +61,8 @@ The following **bonus** features are implemented:
 * [x] Replace Picasso with [Glide](http://inthecheesefactory.com/blog/get-to-know-glide-recommended-by-google/en) for more efficient image rendering.
 * [ ] Enable your app to [receive implicit intents](http://guides.codepath.com/android/Using-Intents-to-Create-Flows#receiving-implicit-intents) from other apps.  When a link is shared from a web browser, it should pre-fill the text and title of the web page when composing a tweet.
 * [ ] When a user leaves the compose view without publishing and there is existing text, prompt to save or delete the draft.  The draft can be resumed from the compose view.
+* [ ] On the profile screen, leverage the [CoordinatorLayout](http://guides.codepath.com/android/Handling-Scrolls-with-CoordinatorLayout#responding-to-scroll-events) to [apply scrolling behavior](https://hackmd.io/s/SJyDOCgU) as the user scrolls through the profile timeline.
+* [ ] User can view their direct messages (or send new ones)
 
 The following **additional** features are implemented:
 
@@ -52,7 +72,7 @@ The following **additional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-<img src='https://i.imgur.com/q2bo7eJ.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
