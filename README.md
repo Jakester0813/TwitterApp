@@ -26,7 +26,7 @@ The following **required** functionality is completed:
 * [x] User can **click on the profile image** in any tweet to see **another user's** profile.
  * [x] User can see picture, tagline, # of followers, # of following, and tweets of clicked user.
  * [x] Profile view includes that user's timeline
-* [ ] (M)User can [infinitely paginate](http://guides.codepath.com/android/Endless-Scrolling-with-AdapterViews-and-RecyclerView) any of these timelines (home, mentions, user) by scrolling to the bottom
+* [ ] User can [infinitely paginate](http://guides.codepath.com/android/Endless-Scrolling-with-AdapterViews-and-RecyclerView) any of these timelines (home, mentions, user) by scrolling to the bottom
 
 The following **optional** features are implemented:
 
@@ -39,7 +39,7 @@ The following **optional** features are implemented:
 * [ ] User can **select "reply" from detail view to respond to a tweet**
 * [ ] User can view following / followers list through the profile
 * [x] Implements robust error handling, [check if internet is available](http://guides.codepath.com/android/Sending-and-Managing-Network-Requests#checking-for-network-connectivity), handle error cases, network failures
-* [ ] (M)When a network request is sent, user sees an [indeterminate progress indicator](http://guides.codepath.com/android/Handling-ProgressBars#progress-within-actionbar)
+* [x] When a network request is sent, user sees an [indeterminate progress indicator](http://guides.codepath.com/android/Handling-ProgressBars#progress-within-actionbar)
 * [ ] User can **"reply" to any tweet on their home timeline**
   * [ ] The user that wrote the original tweet is automatically "@" replied in compose
 * [ ] User can **search for tweets matching a particular query** and see results
@@ -49,7 +49,7 @@ The following **optional** features are implemented:
 The following **bonus** features are implemented:
 
 * [ ] (M)User can see embedded image media within the tweet detail view
-* [ ] User can watch embedded video within the tweet
+* [ ] (M)User can watch embedded video within the tweet
 * [x] Compose tweet functionality is build using modal overlay
 * [x] Use Parcelable instead of Serializable using the popular [Parceler library](http://guides.codepath.com/android/Using-Parceler).
 * [x] [Leverage RecyclerView](http://guides.codepath.com/android/Using-the-RecyclerView) as a replacement for the ListView and ArrayAdapter for all lists of tweets.

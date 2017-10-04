@@ -1,10 +1,14 @@
 package com.jakester.twitterapp.activities;
 
 import android.graphics.Color;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -39,6 +43,7 @@ public class ProfileActivity extends AppCompatActivity {
     TweetAdapter mAdapter;
     TwitterClient mClient;
     User mUser;
+    MenuItem miActionProgressItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,8 +82,37 @@ public class ProfileActivity extends AppCompatActivity {
         mTweetsRecycler.setLayoutManager(mLayoutManager);
         mAdapter = new TweetAdapter(this);
         mTweetsRecycler.setAdapter(mAdapter);
-
+        showProgressBar();
         loadUserTweets();
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // Store instance of the menu item containing progress
+        miActionProgressItem = menu.findItem(R.id.miActionProgress);
+        // Extract the action-view from the menu item
+        ProgressBar v =  (ProgressBar) MenuItemCompat.getActionView(miActionProgressItem);
+        // Return to finish
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu (Menu menu){
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.timeline_menu, menu);
+        return true;
+    }
+
+    public void showProgressBar() {
+        // Show progress item
+        if(miActionProgressItem != null)
+            miActionProgressItem.setVisible(true);
+    }
+
+    public void hideProgressBar() {
+        // Hide progress item
+        if(miActionProgressItem != null)
+            miActionProgressItem.setVisible(false);
     }
 
     public void loadUserTweets(){
@@ -87,6 +121,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 mAdapter.addTweets(Tweet.fromJson(response));
                 mProgress.setVisibility(View.GONE);
+                hideProgressBar();
             }
 
             @Override

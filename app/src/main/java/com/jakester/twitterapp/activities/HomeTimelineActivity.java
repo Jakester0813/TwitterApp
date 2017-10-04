@@ -6,16 +6,19 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
 import com.github.scribejava.apis.TwitterApi;
@@ -53,7 +56,7 @@ public class HomeTimelineActivity extends AppCompatActivity implements NewTweetD
     RecyclerView mTweetRecycler;
     LinearLayoutManager mManager;
     private SwipeRefreshLayout swipeContainer;
-
+    MenuItem miActionProgressItem;
     private EndlessScrollListener scrollListener;
     CircleImageView mProfilePhoto;
     AlertDialog noInternetDialog;
@@ -197,7 +200,25 @@ public class HomeTimelineActivity extends AppCompatActivity implements NewTweetD
         //}
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // Store instance of the menu item containing progress
+        miActionProgressItem = menu.findItem(R.id.miActionProgress);
+        // Extract the action-view from the menu item
+        ProgressBar v =  (ProgressBar) MenuItemCompat.getActionView(miActionProgressItem);
+        // Return to finish
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu (Menu menu){
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.timeline_menu, menu);
+        return true;
+    }
+
     public void populateTimeline(int page, final boolean refresh){
+        showProgressBar();
         client.getHomeTimeline(page, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -212,6 +233,7 @@ public class HomeTimelineActivity extends AppCompatActivity implements NewTweetD
                 }
                 mAdapter.addTweets(tweets);
                 swipeContainer.setRefreshing(false);
+                hideProgressBar();
 
             }
 
@@ -316,6 +338,18 @@ public class HomeTimelineActivity extends AppCompatActivity implements NewTweetD
         });
         mAdapter.addTweet(tweet);
         mTweetRecycler.scrollToPosition(0);
+    }
+
+    public void showProgressBar() {
+        // Show progress item
+        if(miActionProgressItem != null)
+            miActionProgressItem.setVisible(true);
+    }
+
+    public void hideProgressBar() {
+        // Hide progress item
+        if(miActionProgressItem != null)
+            miActionProgressItem.setVisible(false);
     }
 
     //Can incorporate Models into this, maybe as a way to incorporate Retrofit?
