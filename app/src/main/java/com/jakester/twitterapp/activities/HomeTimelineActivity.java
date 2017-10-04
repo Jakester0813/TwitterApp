@@ -124,6 +124,14 @@ public class HomeTimelineActivity extends AppCompatActivity implements NewTweetD
 
         noInternetDialog = InternetManager.getInstance(this).noInternetDialog();
 
+        mProfilePhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(HomeTimelineActivity.this, ProfileActivity.class);
+                i.putExtra("user", Parcels.wrap(currentUser));
+                startActivity(i);
+            }
+        });
 
         /*
         TwitterClient client = TwitterApplication.getRestClient();

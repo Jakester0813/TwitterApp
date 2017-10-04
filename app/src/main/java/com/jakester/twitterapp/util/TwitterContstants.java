@@ -19,6 +19,8 @@ public class TwitterContstants {
     public static final String NO_INTERNET_TITLE = "No Internet";
     public static final String NO_INTERNET_TEXT = "It seems that you are not connected to the internet. Make sure that you are connected before trying again";
 
+    public static final String DEFAULT_BANNER_URL = "http://abs.twimg.com/images/themes/theme1/bg.png";
+
     public static final String NO_TWEETS_TITLE = "No tweets";
     public static final String NO_TWEETS_TEXT = "No found. Please check your input and try again.";
 }

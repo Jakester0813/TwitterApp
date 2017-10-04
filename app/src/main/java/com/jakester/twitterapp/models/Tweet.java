@@ -65,6 +65,8 @@ public class Tweet extends BaseModel {
 	@Column
 	boolean retweeted;
 
+	User mUser;
+
 
 	public Tweet(){
 		super();
@@ -100,10 +102,10 @@ public class Tweet extends BaseModel {
 				this.timestamp = "I AM ERROR";
 				this.timestampDetail = "I AM ALSO ERROR";
 			}
-			User user = User.fromJSON(object.getJSONObject("user"));
-			this.userImage = user.getProfileImage();
-			this.userName = user.getName();
-			this.userHandle = user.getScreenName();
+			this.mUser = User.fromJSON(object.getJSONObject("user"));
+			this.userImage = mUser.getProfileImage();
+			this.userName = mUser.getName();
+			this.userHandle = mUser.getScreenName();
 			this.body = object.getString("text");
 			if(object.optJSONObject("entities").optJSONArray("urls").optJSONObject(0) != null) {
 				this.url = object.optJSONObject("entities").optJSONArray("urls").optJSONObject(0).optString("url");
@@ -199,7 +201,11 @@ public class Tweet extends BaseModel {
 	}
 
 	public String getUserHandle(){
-		return "@"+userHandle;
+		return userHandle;
+	}
+
+	public User getUser(){
+		return mUser;
 	}
 
 	public String getTweet(){
