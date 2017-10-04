@@ -25,7 +25,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <ScrollView
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         tools:layout_editor_absoluteY="0dp"
@@ -33,12 +33,13 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <FrameLayout
                 android:layout_width="match_parent"
-                android:background="@android:color/white"
-                android:layout_height="350dp">
+                android:layout_height="350dp"
+                android:background="@android:color/white">
 
                 <ImageView
                     android:id="@+id/iv_profile_banner"
@@ -48,71 +49,80 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="240dp"
-                    android:padding="8dp"
-                    android:layout_gravity="bottom">
+                    android:layout_gravity="bottom"
+                    android:padding="8dp">
 
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/cv_profile_user_image"
                         android:layout_width="70dp"
                         android:layout_height="70dp"
-                        android:padding="4dp"
-                        android:layout_gravity="start|top"/>
+                        android:layout_gravity="start|top"
+                        android:padding="4dp" />
+
                     <TextView
                         android:id="@+id/tv_profile_username"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="20dp"
+                        android:layout_below="@+id/cv_profile_user_image"
                         android:textColor="@color/primaryTextColor"
-                        android:textStyle="bold"
-                        android:layout_below="@+id/cv_profile_user_image"/>
+                        android:textSize="20dp"
+                        android:textStyle="bold" />
+
                     <TextView
                         android:id="@+id/tv_profile_handle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/tv_profile_username"/>
+                        android:layout_below="@+id/tv_profile_username" />
+
                     <TextView
                         android:id="@+id/tv_profile_description"
-                        android:textColor="@color/primaryTextColor"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/tv_profile_handle"/>
+                        android:layout_below="@+id/tv_profile_handle"
+                        android:textColor="@color/primaryTextColor" />
+
                     <TextView
                         android:id="@+id/tv_profile_location"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingTop="8dp"
-                        android:layout_below="@+id/tv_profile_description"/>
+                        android:layout_below="@+id/tv_profile_description"
+                        android:paddingTop="8dp" />
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_profile_location"
                         android:orientation="horizontal"
-                        android:paddingTop="8dp"
-                        android:layout_below="@+id/tv_profile_location">
+                        android:paddingTop="8dp">
+
                         <TextView
                             android:id="@+id/tv_following_num"
                             android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:textColor="@color/primaryTextColor"
-                            android:textStyle="bold"
-                            android:layout_height="wrap_content" />
+                            android:textStyle="bold" />
+
                         <TextView
                             android:id="@+id/tv_following_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="4dp"
-                            android:text="@string/following"/>
+                            android:text="@string/following" />
+
                         <TextView
                             android:id="@+id/tv_followers_num"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="24dp"
                             android:textColor="@color/primaryTextColor"
-                            android:textStyle="bold"
-                            android:layout_marginLeft="24dp"/>
+                            android:textStyle="bold" />
+
                         <TextView
                             android:id="@+id/tv_followers_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="4dp"
-                            android:text="@string/followers"/>
+                            android:text="@string/followers" />
                     </LinearLayout>
 
                 </RelativeLayout>
@@ -120,9 +130,25 @@
 
             </FrameLayout>
 
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <ProgressBar
+                    android:id="@+id/pb_tweet"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_user_tweets"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+            </FrameLayout>
+
         </LinearLayout>
 
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
 
 
 

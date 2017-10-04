@@ -8,6 +8,7 @@ import com.github.scribejava.apis.FlickrApi;
 import com.github.scribejava.apis.TwitterApi;
 import com.github.scribejava.core.builder.api.BaseApi;
 import com.jakester.twitterapp.R;
+import com.jakester.twitterapp.models.User;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
@@ -74,6 +75,13 @@ public class TwitterClient extends OAuthBaseClient {
 	public void getUser(AsyncHttpResponseHandler handler) {
 		String apiUrl = getApiUrl("account/verify_credentials.json");
 		RequestParams params = new RequestParams();
+		client.get(apiUrl, params, handler);
+	}
+
+	public void getUserTimeline(String id, AsyncHttpResponseHandler handler) {
+		String apiUrl = getApiUrl("statuses/user_timeline.json");
+		RequestParams params = new RequestParams();
+		params.put("user_id", id);
 		client.get(apiUrl, params, handler);
 	}
 
