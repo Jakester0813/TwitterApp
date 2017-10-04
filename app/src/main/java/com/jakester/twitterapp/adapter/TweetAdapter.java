@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.jakester.twitterapp.R;
+import com.jakester.twitterapp.activities.ProfileActivity;
 import com.jakester.twitterapp.activities.TweetActivity;
 import com.jakester.twitterapp.customwidgets.LinkifiedTextView;
 import com.jakester.twitterapp.models.Tweet;
@@ -81,6 +82,7 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewhol
             this.mUserHandle = (TextView) itemView.findViewById(R.id.tv_user_handle);
             this.mTimeStamp = (TextView) itemView.findViewById(R.id.tv_time_stamp);
             this.mBody = (LinkifiedTextView) itemView.findViewById(R.id.tv_tweet_body);
+            this.mProfileImage.setOnClickListener(this);
             itemView.setOnClickListener(this);
 
         }
@@ -96,9 +98,17 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewhol
 
         @Override
         public void onClick(View view) {
-            Intent tweetDetails = new Intent(mContext, TweetActivity.class);
-            tweetDetails.putExtra("tweet", Parcels.wrap(mTweet));
-            mContext.startActivity(tweetDetails);
+            if(view.getId()== R.id.iv_profile_image){
+                Intent userDetails = new Intent(mContext, ProfileActivity.class);
+                userDetails.putExtra("user", Parcels.wrap(mTweet.getUser()));
+                mContext.startActivity(userDetails);
+            }
+            else{
+                Intent tweetDetails = new Intent(mContext, TweetActivity.class);
+                tweetDetails.putExtra("tweet", Parcels.wrap(mTweet));
+                mContext.startActivity(tweetDetails);
+            }
+
         }
     }
 }

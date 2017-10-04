@@ -38,17 +38,17 @@
 
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="350dp"
+                android:layout_height="380dp"
                 android:background="@android:color/white">
 
                 <ImageView
                     android:id="@+id/iv_profile_banner"
                     android:layout_width="match_parent"
-                    android:layout_height="148dp" />
+                    android:layout_height="210dp" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="240dp"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
                     android:padding="8dp">
 
