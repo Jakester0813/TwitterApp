@@ -1,10 +1,13 @@
 package com.jakester.twitterapp.fragments;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -23,8 +26,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.jakester.twitterapp.R;
+import com.jakester.twitterapp.managers.PrefsManager;
 import com.jakester.twitterapp.models.Tweet;
 import com.jakester.twitterapp.models.User;
+import com.jakester.twitterapp.util.TwitterContstants;
 
 import org.parceler.Parcels;
 
@@ -92,7 +97,7 @@ public class NewTweetDialogFragment extends DialogFragment implements View.OnCli
         mCharLimitText = (TextView) view.findViewById(R.id.tv_char_counter);
         mProfileCircle = (CircleImageView) view.findViewById(R.id.cv_profile_image);
 
-
+        mTweetEdit.setText(PrefsManager.getInstance(getActivity()).getDraft());
         mTweetEdit.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
@@ -120,7 +125,25 @@ public class NewTweetDialogFragment extends DialogFragment implements View.OnCli
         mCloseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dismiss();
+                if(mTweetEdit.getText().length() > 0){
+                    AlertDialog.Builder saveDraft = new AlertDialog.Builder(getActivity());
+                    saveDraft.setTitle("Save Draft?")
+                            .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    PrefsManager.getInstance(getActivity()).saveDraft(mTweetEdit.getText().toString());
+                                    dismiss();
+                                }
+
+                            })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dismiss();
+                        }
+                    }).show();
+
+                }
             }
         });
         mCharLimitText.setText(Integer.toString(charLimit));

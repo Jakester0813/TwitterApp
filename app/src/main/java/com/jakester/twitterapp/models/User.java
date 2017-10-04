@@ -30,7 +30,7 @@ public class User {
         user.location = json.getString("location");
         user.description = json.getString("description");
         user.profileImageURL = json.getString("profile_image_url");
-        user.profileBackgroundImageUrl = json.getString("profile_banner_url");
+        user.profileBackgroundImageUrl = json.optString("profile_banner_url");
         user.profileBackgroundColor = json.getString("profile_link_color");
         user.following = json.getInt("friends_count");
         user.followers = json.getInt("followers_count");

@@ -9,6 +9,9 @@
     <string name="forgot_password">Forgot password?</string>
     <string name="whats_happening">What\'s happening?</string>
     <string name="tweet">Tweet</string>
+    <string name="save_draft">Save Draft?</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
     <string name="login_label">Log in</string>
     <string name="period">.</string>
     <string name="likes">Likes</string>
