@@ -4,29 +4,26 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
-import com.github.scribejava.apis.TwitterApi;
 import com.jakester.twitterapp.R;
-import com.jakester.twitterapp.adapter.TweetAdapter;
+import com.jakester.twitterapp.adapter.TwitterFragmentPagerAdapter;
 import com.jakester.twitterapp.application.TwitterApplication;
+import com.jakester.twitterapp.fragments.HomeTimelineFragment;
 import com.jakester.twitterapp.fragments.NewTweetDialogFragment;
-import com.jakester.twitterapp.listener.EndlessScrollListener;
+import com.jakester.twitterapp.fragments.MentionsTimelineFragment;
 import com.jakester.twitterapp.managers.InternetManager;
 import com.jakester.twitterapp.models.Tweet;
 import com.jakester.twitterapp.models.User;
@@ -51,13 +48,8 @@ import rx.functions.Func0;
 public class HomeTimelineActivity extends AppCompatActivity implements NewTweetDialogFragment.FilterDialogListener{
 
     private Subscription subscription;
-    ArrayList<Tweet> tweets;
-    TweetAdapter mAdapter;
-    RecyclerView mTweetRecycler;
-    LinearLayoutManager mManager;
-    private SwipeRefreshLayout swipeContainer;
+
     MenuItem miActionProgressItem;
-    private EndlessScrollListener scrollListener;
     CircleImageView mProfilePhoto;
     AlertDialog noInternetDialog;
     private TwitterClient client;
@@ -74,43 +66,17 @@ public class HomeTimelineActivity extends AppCompatActivity implements NewTweetD
         toolbar.setTitle(null);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(null);
+
+        client = TwitterApplication.getRestClient();
         started = true;
         mProfilePhoto = (CircleImageView) findViewById(R.id.iv_profile_image);
-        mTweetRecycler = (RecyclerView) findViewById(R.id.rv_tweets);
-        mManager = new LinearLayoutManager(this);
-        mTweetRecycler.setLayoutManager(mManager);
-        scrollListener = new EndlessScrollListener(mManager) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                // Triggered only when new data needs to be appended to the list
-                // Add whatever code is needed to append new items to the bottom of the list
-                if(InternetManager.getInstance(HomeTimelineActivity.this).isInternetAvailable()) {
-                    populateTimeline(page+1, false);
-                }
-                else{
-                    noInternetDialog.show();
-                }
-            }
-        };
-        mTweetRecycler.addOnScrollListener(scrollListener);
 
-        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.srl_swipe_container);
-        // Setup refresh listener which triggers new data loading
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                // Your code to refresh the list here.
-                // Make sure you call swipeContainer.setRefreshing(false)
-                // once the network request has completed successfully.
-                populateTimeline(0, true);
-            }
-        });
-        // Configure the refreshing colors
-        swipeContainer.setColorSchemeResources(R.color.colorAccent,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_blue_bright);
 
+        ViewPager vpPager = (ViewPager) findViewById(R.id.viewpager);
+        vpPager.setAdapter(new TwitterFragmentPagerAdapter(getSupportFragmentManager(), this));
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+        tabLayout.setupWithViewPager(vpPager);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -119,11 +85,6 @@ public class HomeTimelineActivity extends AppCompatActivity implements NewTweetD
                 showNewTweetDialog();
             }
         });
-
-        mAdapter = new TweetAdapter(HomeTimelineActivity.this);
-        mTweetRecycler.setAdapter(mAdapter);
-
-        client = TwitterApplication.getRestClient();
 
         noInternetDialog = InternetManager.getInstance(this).noInternetDialog();
 
@@ -176,86 +137,6 @@ public class HomeTimelineActivity extends AppCompatActivity implements NewTweetD
         */
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if(client.isAuthenticated() && InternetManager.getInstance(this).isInternetAvailable()) {
-            getUser();
-            populateTimeline(0, false);
-        }
-        if(!InternetManager.getInstance(this).isInternetAvailable()){
-            ArrayList<Tweet> tweets = (ArrayList<Tweet>) SQLite.select()
-                    .from(Tweet.class).queryList();
-            mAdapter.addTweets(tweets);
-            swipeContainer.setRefreshing(false);
-        }
-    }
-
-    @Override
-    protected void onDestroy(){
-        super.onDestroy();
-        //This is essential as it prevents a memory leak
-        //if(subscription != null && !subscription.isUnsubscribed()){
-        //    subscription.unsubscribe();
-        //}
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        // Store instance of the menu item containing progress
-        miActionProgressItem = menu.findItem(R.id.miActionProgress);
-        // Extract the action-view from the menu item
-        ProgressBar v =  (ProgressBar) MenuItemCompat.getActionView(miActionProgressItem);
-        // Return to finish
-        return super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu (Menu menu){
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.timeline_menu, menu);
-        return true;
-    }
-
-    public void populateTimeline(int page, final boolean refresh){
-        showProgressBar();
-        client.getHomeTimeline(page, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                Log.d("OBJECT", response.toString());
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                ArrayList<Tweet> tweets =  Tweet.fromJson(response);
-                if(refresh){
-                    mAdapter.clear();
-                }
-                mAdapter.addTweets(tweets);
-                swipeContainer.setRefreshing(false);
-                hideProgressBar();
-
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                Log.d("TwitterClient", errorResponse.toString());
-                throwable.printStackTrace();
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                Log.d("TwitterClient", errorResponse.toString());
-                throwable.printStackTrace();
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Log.d("TwitterClient", responseString);
-                throwable.printStackTrace();
-            }
-        });
-    }
 
     public void getUser(){
         client.getUser(new JsonHttpResponseHandler() {
@@ -296,6 +177,29 @@ public class HomeTimelineActivity extends AppCompatActivity implements NewTweetD
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(client.isAuthenticated() && InternetManager.getInstance(this).isInternetAvailable()) {
+            getUser();
+            populateTimeline(0, false);
+        }
+        if(!InternetManager.getInstance(this).isInternetAvailable()){
+            ArrayList<Tweet> tweets = (ArrayList<Tweet>) SQLite.select()
+                    .from(Tweet.class).queryList();
+            homeTimelineFragment.addItems(tweets,false);
+        }
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        //This is essential as it prevents a memory leak
+        //if(subscription != null && !subscription.isUnsubscribed()){
+        //    subscription.unsubscribe();
+        //}
+    }
+
     private void showNewTweetDialog() {
         FragmentManager fm = this.getSupportFragmentManager();
         NewTweetDialogFragment filterDialog = NewTweetDialogFragment.newInstance(TwitterContstants.COMPOSE_TWEET);
@@ -305,17 +209,59 @@ public class HomeTimelineActivity extends AppCompatActivity implements NewTweetD
         filterDialog.show(fm,TwitterContstants.FRAGMENT_TWEET);
     }
 
+
+
     @Override
-    public void onFinishFilterDialog(Tweet tweet) {
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // Store instance of the menu item containing progress
+        miActionProgressItem = menu.findItem(R.id.miActionProgress);
+        // Extract the action-view from the menu item
+        ProgressBar v =  (ProgressBar) MenuItemCompat.getActionView(miActionProgressItem);
+        // Return to finish
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu (Menu menu){
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.timeline_menu, menu);
+        return true;
+    }
+
+    public void showProgressBar() {
+        // Show progress item
+        if(miActionProgressItem != null)
+            miActionProgressItem.setVisible(true);
+    }
+
+    public void hideProgressBar() {
+        // Hide progress item
+        if(miActionProgressItem != null)
+            miActionProgressItem.setVisible(false);
+    }
+    //Can incorporate Models into this, maybe as a way to incorporate Retrofit?
+    public Observable<Integer> getIntObservable(){
+        return Observable.defer(new Func0<Observable<Integer>>() {
+            @Override
+            public Observable<Integer> call() {
+                return Observable.just(1);
+            }
+        });
+    }
+
+    @Override
+    public void onFinishFilterDialog(final Tweet tweet) {
         client.postTweet(tweet.getTweet(), new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 Log.d("OBJECT", response.toString());
+                homeTimelineFragment.addTweet(tweet);
             }
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 Log.d("ARRAY", response.toString());
+                homeTimelineFragment.addTweet(tweet);
             }
 
             @Override
@@ -336,28 +282,79 @@ public class HomeTimelineActivity extends AppCompatActivity implements NewTweetD
                 throwable.printStackTrace();
             }
         });
-        mAdapter.addTweet(tweet);
-        mTweetRecycler.scrollToPosition(0);
+
     }
 
-    public void showProgressBar() {
-        // Show progress item
-        if(miActionProgressItem != null)
-            miActionProgressItem.setVisible(true);
+    public void showNoInternetDialog(){
+        noInternetDialog.show();
     }
 
-    public void hideProgressBar() {
-        // Hide progress item
-        if(miActionProgressItem != null)
-            miActionProgressItem.setVisible(false);
-    }
-
-    //Can incorporate Models into this, maybe as a way to incorporate Retrofit?
-    public Observable<Integer> getIntObservable(){
-        return Observable.defer(new Func0<Observable<Integer>>() {
+    public void populateTimeline(int page, final boolean refresh){
+        showProgressBar();
+        client.getHomeTimeline(page, new JsonHttpResponseHandler() {
             @Override
-            public Observable<Integer> call() {
-                return Observable.just(1);
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                Log.d("OBJECT", response.toString());
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                hideProgressBar();
+                homeTimelineFragment.addItems(Tweet.fromJson(response),refresh);
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Log.d("TwitterClient", errorResponse.toString());
+                throwable.printStackTrace();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                Log.d("TwitterClient", errorResponse.toString());
+                throwable.printStackTrace();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Log.d("TwitterClient", responseString);
+                throwable.printStackTrace();
+            }
+        });
+    }
+
+    public void populateMentionsTimeline(){
+        showProgressBar();
+        client.getMentionsTimeline(new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                Log.d("OBJECT", response.toString());
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                hideProgressBar();
+                mentionsListFragment.addItems(Tweet.fromJson(response));
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Log.d("TwitterClient", errorResponse.toString());
+                throwable.printStackTrace();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                Log.d("TwitterClient", errorResponse.toString());
+                throwable.printStackTrace();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Log.d("TwitterClient", responseString);
+                throwable.printStackTrace();
             }
         });
     }
