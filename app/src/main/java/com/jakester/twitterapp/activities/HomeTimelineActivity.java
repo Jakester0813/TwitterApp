@@ -45,7 +45,7 @@ import rx.Observable;
 import rx.Subscription;
 import rx.functions.Func0;
 
-public class HomeTimelineActivity extends AppCompatActivity implements NewTweetDialogFragment.FilterDialogListener{
+public class HomeTimelineActivity extends AppCompatActivity{
 
     private Subscription subscription;
 
@@ -77,14 +77,6 @@ public class HomeTimelineActivity extends AppCompatActivity implements NewTweetD
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(vpPager);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showNewTweetDialog();
-            }
-        });
 
         noInternetDialog = InternetManager.getInstance(this).noInternetDialog();
 
@@ -182,12 +174,6 @@ public class HomeTimelineActivity extends AppCompatActivity implements NewTweetD
         super.onResume();
         if(client.isAuthenticated() && InternetManager.getInstance(this).isInternetAvailable()) {
             getUser();
-            populateTimeline(0, false);
-        }
-        if(!InternetManager.getInstance(this).isInternetAvailable()){
-            ArrayList<Tweet> tweets = (ArrayList<Tweet>) SQLite.select()
-                    .from(Tweet.class).queryList();
-            homeTimelineFragment.addItems(tweets,false);
         }
     }
 
@@ -200,7 +186,7 @@ public class HomeTimelineActivity extends AppCompatActivity implements NewTweetD
         //}
     }
 
-    private void showNewTweetDialog() {
+    public void showNewTweetDialog() {
         FragmentManager fm = this.getSupportFragmentManager();
         NewTweetDialogFragment filterDialog = NewTweetDialogFragment.newInstance(TwitterContstants.COMPOSE_TWEET);
         Bundle args = new Bundle();
@@ -249,113 +235,9 @@ public class HomeTimelineActivity extends AppCompatActivity implements NewTweetD
         });
     }
 
-    @Override
-    public void onFinishFilterDialog(final Tweet tweet) {
-        client.postTweet(tweet.getTweet(), new JsonHttpResponseHandler(){
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                Log.d("OBJECT", response.toString());
-                homeTimelineFragment.addTweet(tweet);
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                Log.d("ARRAY", response.toString());
-                homeTimelineFragment.addTweet(tweet);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                Log.d("TwitterClient", errorResponse.toString());
-                throwable.printStackTrace();
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                Log.d("TwitterClient", errorResponse.toString());
-                throwable.printStackTrace();
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Log.d("TwitterClient", responseString);
-                throwable.printStackTrace();
-            }
-        });
-
-    }
 
     public void showNoInternetDialog(){
         noInternetDialog.show();
     }
 
-    public void populateTimeline(int page, final boolean refresh){
-        showProgressBar();
-        client.getHomeTimeline(page, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                Log.d("OBJECT", response.toString());
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                hideProgressBar();
-                homeTimelineFragment.addItems(Tweet.fromJson(response),refresh);
-
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                Log.d("TwitterClient", errorResponse.toString());
-                throwable.printStackTrace();
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                Log.d("TwitterClient", errorResponse.toString());
-                throwable.printStackTrace();
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Log.d("TwitterClient", responseString);
-                throwable.printStackTrace();
-            }
-        });
-    }
-
-    public void populateMentionsTimeline(){
-        showProgressBar();
-        client.getMentionsTimeline(new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                Log.d("OBJECT", response.toString());
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                hideProgressBar();
-                mentionsListFragment.addItems(Tweet.fromJson(response));
-
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                Log.d("TwitterClient", errorResponse.toString());
-                throwable.printStackTrace();
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                Log.d("TwitterClient", errorResponse.toString());
-                throwable.printStackTrace();
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Log.d("TwitterClient", responseString);
-                throwable.printStackTrace();
-            }
-        });
-    }
 }

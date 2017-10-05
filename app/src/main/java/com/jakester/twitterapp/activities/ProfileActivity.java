@@ -67,8 +67,9 @@ public class ProfileActivity extends AppCompatActivity {
         mFollowingText = (TextView) findViewById(R.id.tv_followers_text);
         mNumFollowers = (TextView) findViewById(R.id.tv_following_num);
         mFollowersText = (TextView) findViewById(R.id.tv_following_text);
-
-        Glide.with(this).load(mUser.getProfileImage()).into(mProfileImage);
+        String url = mUser.getProfileImage();
+        url = url.replace("_normal","");
+        Glide.with(this).load(url).into(mProfileImage);
         if(!mUser.getBannerImage().equals(TwitterContstants.DEFAULT_BANNER_URL)) {
             Glide.with(this).load(mUser.getBannerImage()).into(mBackgroundImage);
         }

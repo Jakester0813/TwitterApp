@@ -18,7 +18,7 @@ The following **required** functionality is completed:
   * [x] User can click a “Compose” icon in the Action Bar on the top right
   * [x] User can then enter a new tweet and post this to twitter
   * [x] User is taken back to home timeline with **new tweet visible** in timeline
-* [ ] (W)User can **switch between Timeline and Mention views using tabs**
+* [x] (W)User can **switch between Timeline and Mention views using tabs**
   * [x] (W)User can view their home timeline tweets.
   * [x] (W)User can view the recent mentions of their username.
 * [x] User can navigate to **view their own profile**
