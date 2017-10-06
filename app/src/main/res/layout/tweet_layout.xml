@@ -81,4 +81,78 @@
             android:layout_toEndOf="@+id/iv_profile_image"
             android:layout_below="@+id/tv_username" />
 
+        <ImageView
+            android:id="@+id/iv_tweet_image"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:visibility="gone"
+            android:layout_toEndOf="@+id/iv_profile_image"
+            android:layout_below="@+id/tv_tweet_body"
+            />
+
+    <VideoView
+        android:id="@+id/vv_tweet_video"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:visibility="gone"
+        android:layout_toEndOf="@+id/iv_profile_image"
+        android:layout_below="@+id/iv_tweet_image" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:orientation="horizontal"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/iv_profile_image"
+        android:layout_below="@+id/vv_tweet_video">
+
+        <ImageView
+            android:id="@+id/iv_reply"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/ic_reply"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="8dp"
+            android:tint="@color/secondaryTextColor"/>
+
+        <ImageView
+            android:id="@+id/iv_retweet"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_toStartOf="@+id/tv_retweet_num"
+            android:src="@drawable/ic_retweet"
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="true"/>
+        <TextView
+            android:id="@+id/tv_retweet_num"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:textColor="@color/secondaryTextColor"
+            android:textAlignment="textStart"
+            android:layout_marginEnd="40dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="true"
+            android:layout_toStartOf="@+id/iv_favorite" />
+
+        <ImageView
+            android:id="@+id/iv_favorite"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/ic_favorite_border"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/tv_favorite_num"
+            android:layout_marginEnd="7dp" />
+        <TextView
+            android:id="@+id/tv_favorite_num"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:textColor="@color/secondaryTextColor"
+            android:layout_marginLeft="8dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="21dp" />
+
+    </RelativeLayout>
+
 </RelativeLayout>

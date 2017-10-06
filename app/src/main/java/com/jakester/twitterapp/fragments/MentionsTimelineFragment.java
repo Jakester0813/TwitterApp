@@ -44,7 +44,7 @@ public class MentionsTimelineFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragments_tweets_list, container, false);
+        View v = inflater.inflate(R.layout.fragment_mentions_list, container, false);
         mTweetRecycler = (RecyclerView) v.findViewById(R.id.rv_tweets);
         mManager = new LinearLayoutManager(getContext());
         mTweetRecycler.setLayoutManager(mManager);

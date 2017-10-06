@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import com.bumptech.glide.Glide;
 import com.jakester.twitterapp.R;
@@ -70,10 +71,11 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewhol
 
     public class TweetViewholder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        public ImageView mProfileImage;
-        public TextView mUserName, mUserHandle, mTimeStamp;
+        public ImageView mProfileImage, mEmbededImage, mReplyImage, mRetweetImage, mFavoriteImage;
+        public TextView mUserName, mUserHandle, mTimeStamp, mRetweetsNum, mFavoritesNum;
         public LinkifiedTextView mBody;
         public Tweet mTweet;
+        public VideoView mEmbededVideo;
 
         public TweetViewholder(View itemView) {
             super(itemView);
@@ -82,6 +84,13 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewhol
             this.mUserHandle = (TextView) itemView.findViewById(R.id.tv_user_handle);
             this.mTimeStamp = (TextView) itemView.findViewById(R.id.tv_time_stamp);
             this.mBody = (LinkifiedTextView) itemView.findViewById(R.id.tv_tweet_body);
+            this.mEmbededImage = (ImageView) itemView.findViewById(R.id.iv_tweet_image);
+            this.mEmbededVideo = (VideoView) itemView.findViewById(R.id.vv_tweet_video);
+            this.mReplyImage = (ImageView) itemView.findViewById(R.id.iv_reply);
+            this.mRetweetImage = (ImageView) itemView.findViewById(R.id.iv_retweet);
+            this.mRetweetsNum = (TextView) itemView.findViewById(R.id.tv_retweet_num);
+            this.mFavoriteImage = (ImageView) itemView.findViewById(R.id.iv_favorite);
+            this.mFavoritesNum = (TextView) itemView.findViewById(R.id.tv_favorite_num);
             this.mProfileImage.setOnClickListener(this);
             itemView.setOnClickListener(this);
 
@@ -94,6 +103,14 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewhol
             this.mTimeStamp.setText(tweet.getTimestamp());
             this.mBody.setText(tweet.getTweet());
             this.mTweet = tweet;
+            this.mRetweetImage.setImageResource(tweet.getRetweeted() ? R.drawable.ic_retweeted : R.drawable.ic_retweet);
+            if(tweet.getRetweetCount() > 0){
+                this.mRetweetsNum.setText(Integer.toString(tweet.getRetweetCount()));
+            }
+            this.mFavoriteImage.setImageResource(tweet.getFavorited() ? R.drawable.ic_favorite : R.drawable.ic_favorite_border);
+            if(tweet.getFavoritedCount() > 0){
+                this.mFavoritesNum.setText(Integer.toString(tweet.getFavoritedCount()));
+            }
         }
 
         @Override

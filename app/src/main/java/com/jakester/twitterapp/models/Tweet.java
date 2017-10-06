@@ -224,5 +224,11 @@ public class Tweet extends BaseModel {
 		return displayUrl;
 	}
 
+	public boolean getRetweeted() { return retweeted; }
+
+	public int getRetweetCount() { return retweetCount; }
+
+	public boolean getFavorited() { return favorited; }
+
 	public int getFavoritedCount() { return favoritedCount; }
 }

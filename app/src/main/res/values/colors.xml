@@ -5,4 +5,6 @@
     <color name="colorAccent">#1DA1F2</color>
     <color name="primaryTextColor">#000000</color>
     <color name="secondaryTextColor">#6F7D87</color>
+    <color name="favortiedColor">#E0245E</color>
+    <color name="retweetedColor">#40CA7F</color>
 </resources>
