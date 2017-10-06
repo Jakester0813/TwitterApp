@@ -246,7 +246,7 @@ public class HomeTimelineFragment extends Fragment  implements NewTweetDialogFra
     }
 
     private void retweetTweet(final Tweet tweet){
-        client.favoriteTweet(tweet.getRetweeted(), tweet.getTweetId(), new JsonHttpResponseHandler(){
+        client.reTweet(tweet.getRetweeted(), tweet.getTweetId(), new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 Log.d("OBJECT", response.toString());
