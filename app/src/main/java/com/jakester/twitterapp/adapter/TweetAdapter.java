@@ -71,6 +71,8 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewhol
 
     public class TweetViewholder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        
+
         public ImageView mProfileImage, mEmbededImage, mReplyImage, mRetweetImage, mFavoriteImage;
         public TextView mUserName, mUserHandle, mTimeStamp, mRetweetsNum, mFavoritesNum;
         public LinkifiedTextView mBody;
@@ -119,6 +121,12 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewhol
                 Intent userDetails = new Intent(mContext, ProfileActivity.class);
                 userDetails.putExtra("user", Parcels.wrap(mTweet.getUser()));
                 mContext.startActivity(userDetails);
+            }
+            else if(view.getId() == R.id.iv_favorite){
+
+            }
+            else if(view.getId() == R.id.iv_retweet){
+
             }
             else{
                 Intent tweetDetails = new Intent(mContext, TweetActivity.class);

@@ -66,7 +66,6 @@ The following **bonus** features are implemented:
 The following **additional** features are implemented:
 
 * [ ] (F)Improve the user interface and theme the app to feel **Twitter branded**
-* [ ] (F)Make this app in the MVP archtechture
 * [ ] (T)Heterogenous layouts for different tweets
 
 ## Video Walkthrough

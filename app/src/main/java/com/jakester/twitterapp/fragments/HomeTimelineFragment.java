@@ -89,13 +89,7 @@ public class HomeTimelineFragment extends Fragment  implements NewTweetDialogFra
 
 
 
-        FloatingActionButton fab = (FloatingActionButton) v.findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((HomeTimelineActivity)getActivity()).showNewTweetDialog();
-            }
-        });
+
 
         return v;
     }

@@ -55,7 +55,7 @@ public class HomeTimelineActivity extends AppCompatActivity{
     private TwitterClient client;
     User currentUser;
     boolean started;
-
+    FloatingActionButton fab;
 
 
     @Override
@@ -72,8 +72,38 @@ public class HomeTimelineActivity extends AppCompatActivity{
         mProfilePhoto = (CircleImageView) findViewById(R.id.iv_profile_image);
 
 
+
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showNewTweetDialog();
+            }
+        });
+
         ViewPager vpPager = (ViewPager) findViewById(R.id.viewpager);
         vpPager.setAdapter(new TwitterFragmentPagerAdapter(getSupportFragmentManager(), this));
+        vpPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (position == 0){
+                    fab.setVisibility(View.VISIBLE);
+                }
+                else{
+                    fab.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(vpPager);
@@ -88,45 +118,6 @@ public class HomeTimelineActivity extends AppCompatActivity{
                 startActivity(i);
             }
         });
-
-        /*
-        TwitterClient client = TwitterApplication.getRestClient();
-        client.getHomeTimeline(1, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray json) {
-                // Response is automatically parsed into a JSONArray
-                tweets = Tweet.fromJson(json);
-
-
-            }
-        });
-
-        /*
-        subscription = getIntObservable()
-                //
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Integer>() {
-
-            //Called when the observable is done, called only once
-            //Called right after onNext()
-            @Override
-            public void onCompleted() {
-            }
-
-            //Called when an error occurs
-            @Override
-            public void onError(Throwable e) {
-                Log.e("GMAIL",e.getMessage(), e);
-            }
-
-            //This gets called when the API call gets returned and the int is returned
-            @Override
-            public void onNext(Integer integer) {
-                Log.d("I DID IT", integer.toString());
-            }
-        });
-        */
     }
 
 
@@ -195,7 +186,13 @@ public class HomeTimelineActivity extends AppCompatActivity{
         filterDialog.show(fm,TwitterContstants.FRAGMENT_TWEET);
     }
 
+    public void showFab(){
+        fab.setVisibility(View.VISIBLE);
+    }
 
+    public void hideFab(){
+        fab.setVisibility(View.GONE);
+    }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {

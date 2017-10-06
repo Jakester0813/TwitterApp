@@ -52,6 +52,8 @@ public class MentionsTimelineFragment extends Fragment {
         mAdapter = new TweetAdapter(getContext());
         mTweetRecycler.setAdapter(mAdapter);
 
+
+
         return v;
     }
 
