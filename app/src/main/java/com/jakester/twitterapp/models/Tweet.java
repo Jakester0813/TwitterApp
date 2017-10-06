@@ -71,7 +71,7 @@ public class Tweet extends BaseModel {
 
 	User mUser;
 
-
+	String mImageURL;
 
 
 	public Tweet(){
@@ -114,6 +114,12 @@ public class Tweet extends BaseModel {
 			this.userName = mUser.getName();
 			this.userHandle = mUser.getScreenName();
 			this.body = object.getString("text");
+			String[] text = body.split(" ");
+			this.mImageURL = "";
+			if(text[text.length-1].contains("https://t.co")){
+				this.mImageURL = text[text.length-1];
+				this.body.replace(this.mImageURL, "");
+			}
 			if(object.optJSONObject("entities").optJSONArray("urls").optJSONObject(0) != null) {
 				this.url = object.optJSONObject("entities").optJSONArray("urls").optJSONObject(0).optString("url");
 				this.displayUrl = object.optJSONObject("entities").optJSONArray("urls").optJSONObject(0).optString("display_url");
@@ -221,6 +227,8 @@ public class Tweet extends BaseModel {
 	public String getTweet(){
 		return body;
 	}
+
+	public String getImageUrl() { return mImageURL;}
 
 	public String getUrl(){
 		return url;

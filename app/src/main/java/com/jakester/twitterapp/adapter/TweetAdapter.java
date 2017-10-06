@@ -115,6 +115,11 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewhol
             this.mTimeStamp.setText(tweet.getTimestamp());
             this.mBody.setText(tweet.getTweet());
             this.mTweet = tweet;
+            if(!tweet.getImageUrl().equals("")){
+                Glide.with(mContext).load(tweet.getImageUrl()).into(mEmbededImage);
+                mEmbededImage.setVisibility(View.VISIBLE);
+            }
+
             this.mReplyImage.setOnClickListener(this);
             this.mRetweetImage.setOnClickListener(this);
             this.mRetweetImage.setImageResource(tweet.getRetweeted() ? R.drawable.ic_retweeted : R.drawable.ic_retweet);
