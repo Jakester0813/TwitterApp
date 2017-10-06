@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
@@ -45,7 +46,8 @@ import rx.Observable;
 import rx.Subscription;
 import rx.functions.Func0;
 
-public class HomeTimelineActivity extends AppCompatActivity{
+public class HomeTimelineActivity extends AppCompatActivity
+        implements  HomeTimelineFragment.NewTweetCallback, NewTweetDialogFragment.FilterDialogListener{
 
     private Subscription subscription;
 
@@ -56,7 +58,7 @@ public class HomeTimelineActivity extends AppCompatActivity{
     User currentUser;
     boolean started;
     FloatingActionButton fab;
-
+    TwitterFragmentPagerAdapter mFragAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,12 +79,14 @@ public class HomeTimelineActivity extends AppCompatActivity{
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showNewTweetDialog();
+                showNewTweetDialog(false, currentUser);
             }
         });
 
+        mFragAdapter = new TwitterFragmentPagerAdapter(getSupportFragmentManager(), this);
+
         ViewPager vpPager = (ViewPager) findViewById(R.id.viewpager);
-        vpPager.setAdapter(new TwitterFragmentPagerAdapter(getSupportFragmentManager(), this));
+        vpPager.setAdapter(mFragAdapter);
         vpPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -177,15 +181,6 @@ public class HomeTimelineActivity extends AppCompatActivity{
         //}
     }
 
-    public void showNewTweetDialog() {
-        FragmentManager fm = this.getSupportFragmentManager();
-        NewTweetDialogFragment filterDialog = NewTweetDialogFragment.newInstance(TwitterContstants.COMPOSE_TWEET);
-        Bundle args = new Bundle();
-        args.putParcelable("user", Parcels.wrap(currentUser));
-        filterDialog.setArguments(args);
-        filterDialog.show(fm,TwitterContstants.FRAGMENT_TWEET);
-    }
-
     public void showFab(){
         fab.setVisibility(View.VISIBLE);
     }
@@ -237,4 +232,29 @@ public class HomeTimelineActivity extends AppCompatActivity{
         noInternetDialog.show();
     }
 
+
+
+    @Override
+    public void onTweetAction(Tweet tweet, boolean reply) {
+
+    }
+
+    public void showNewTweetDialog(boolean reply, User user){
+        FragmentManager fm =  getSupportFragmentManager();
+        NewTweetDialogFragment filterDialog = NewTweetDialogFragment.newInstance(TwitterContstants.COMPOSE_TWEET);
+        Bundle args = new Bundle();
+        args.putParcelable("user", Parcels.wrap(currentUser));
+        if(reply){
+            args.putParcelable("user_reply", Parcels.wrap(user));
+        }
+        args.putBoolean("reply", reply);
+        filterDialog.setArguments(args);
+        filterDialog.show(fm,TwitterContstants.FRAGMENT_TWEET);
+    }
+
+    @Override
+    public void onFinishFilterDialog(Tweet tweet, boolean reply) {
+        HomeTimelineFragment frag = (HomeTimelineFragment) mFragAdapter.getRegisteredFragment(0);
+        frag.postTweet(tweet, reply);
+    }
 }

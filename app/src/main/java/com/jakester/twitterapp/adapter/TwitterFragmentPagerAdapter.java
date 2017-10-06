@@ -12,7 +12,7 @@ import com.jakester.twitterapp.fragments.MentionsTimelineFragment;
  * Created by Jake on 10/5/2017.
  */
 
-public class TwitterFragmentPagerAdapter extends FragmentPagerAdapter {
+public class TwitterFragmentPagerAdapter extends SmartFragmentStatePagerAdapter  {
     private String tabTitles[] = new String[] { "Home", "Mentions"};
     private Context context;
 

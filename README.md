@@ -35,13 +35,13 @@ The following **optional** features are implemented:
 * [x] User can **pull down to refresh tweets timeline**
 * [x] User can **open the twitter app offline and see last loaded tweets**. Persisted in SQLite tweets are refreshed on every application launch. While "live data" is displayed when app can get it from Twitter API, it is also saved for use in offline mode.
 * [x] User can tap a tweet to **open a detailed tweet view**
-    * [ ] (W)User can take favorite (and unfavorite) or retweet actions on a tweet
-* [ ] (T)User can **select "reply" from detail view to respond to a tweet**
+    * [ ] User can take favorite (and unfavorite) or retweet actions on a tweet
+* [ ] User can **select "reply" from detail view to respond to a tweet**
 * [x] User can view following / followers list through the profile
 * [x] Implements robust error handling, [check if internet is available](http://guides.codepath.com/android/Sending-and-Managing-Network-Requests#checking-for-network-connectivity), handle error cases, network failures
 * [x] When a network request is sent, user sees an [indeterminate progress indicator](http://guides.codepath.com/android/Handling-ProgressBars#progress-within-actionbar)
-* [ ] (F)User can **"reply" to any tweet on their home timeline**
-  * [ ] (F)The user that wrote the original tweet is automatically "@" replied in compose
+* [x] User can **"reply" to any tweet on their home timeline**
+  * [x] The user that wrote the original tweet is automatically "@" replied in compose
 * [ ] (F)User can **search for tweets matching a particular query** and see results
 * [ ] (F)Usernames and hashtags are styled and clickable within tweets [using clickable spans](http://guides.codepath.com/android/Working-with-the-TextView#creating-clickable-styled-spans)
 
@@ -72,6 +72,9 @@ The following **additional** features are implemented:
 Fixes to do list:
 * [ ] Truncate the handle on each tweet
 * [ ] Add borders for recyclerviews
+* [ ] Alignment is off for retweet on Home Timeline
+* [ ] New Tweet dialog could use some touching up
+* [ ] Reply to is pretty buggy
 
 
 ## Video Walkthrough

@@ -17,6 +17,19 @@
         android:layout_marginTop="8dp"
         app:srcCompat="@drawable/ic_close" />
 
+    <TextView
+        android:id="@+id/tv_reply_to"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="12dp"
+        android:textColor="@color/secondaryTextColor"
+        android:drawableLeft="@drawable/ic_reply"
+        android:drawablePadding="4dp"
+        android:layout_below="@+id/ib_close"
+        android:visibility="gone"
+        />
+
     <EditText
         android:id="@+id/et_tweet"
         android:layout_width="match_parent"
@@ -25,7 +38,8 @@
         android:background="@android:color/transparent"
         android:hint="@string/whats_happening"
         android:textSize="16dp"
-        android:layout_below="@+id/ib_close"
+        android:layout_marginTop="8dp"
+        android:layout_below="@+id/tv_reply_to"
         android:layout_alignParentStart="true" />
 
     <TextView
@@ -55,4 +69,21 @@
         android:layout_above="@+id/et_tweet"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"/>
+
+    <TextView
+        android:id="@+id/tv_action_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:textColor="@color/secondaryTextColor"
+        android:layout_marginEnd="15dp"
+        android:layout_toStartOf="@+id/cv_profile_image" />
+
+    <TextView
+        android:id="@+id/tv_action_handle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/secondaryTextColor"
+        android:layout_above="@+id/et_tweet"
+        android:layout_alignEnd="@+id/tv_action_name" />
 </RelativeLayout>

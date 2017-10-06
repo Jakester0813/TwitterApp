@@ -67,7 +67,7 @@ public class Tweet extends BaseModel {
 	@Column
 	boolean retweeted;
 	@Column
-	String retweetedBy;
+	String replyFrom;
 
 	User mUser;
 
@@ -78,19 +78,19 @@ public class Tweet extends BaseModel {
 		super();
 	}
 
-	public Tweet(User pUser, String pTweet) {
+	public Tweet(User pUser, String pTweet, String replyTo) {
 		super();
 		this.timestamp = "0s";
-		try {
-			this.timestampDetail = setTimeStampDetail(new Date().toString());
-		}
-		catch (ParseException e) {
-			e.printStackTrace();
-			this.timestampDetail = "I AM ALSO ERROR";
-		}
+		this.timestampDetail = "0s";
 		this.userImage = pUser.getProfileImage();
 		this.userName = pUser.getName();
 		this.userHandle = pUser.getScreenName();
+		if(!replyTo.equals("")) {
+			this.replyFrom = replyTo;
+		}
+		else{
+			this.replyFrom = "null";
+		}
 		this.body = pTweet;
 	}
 
@@ -123,7 +123,7 @@ public class Tweet extends BaseModel {
 			this.favoritedCount = object.getInt("favorite_count");
 			this.retweeted = object.getBoolean("retweeted");
 			this.retweetCount = object.getInt("retweet_count");
-			this.retweetedBy = object.optString("in_reply_to_screen_name","");
+			this.replyFrom = object.optString("in_reply_to_screen_name","");
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -266,8 +266,8 @@ public class Tweet extends BaseModel {
 	}
 
 	public String getRetweetedBy(){
-		if(!retweetedBy.equals("null")){
-			return "Replying to @" + retweetedBy;
+		if(!replyFrom.equals("null")){
+			return "Replying to @" + replyFrom;
 		}
 		else{
 			return "";

@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
@@ -43,14 +44,14 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class NewTweetDialogFragment extends DialogFragment implements View.OnClickListener{
     private EditText mTweetEdit;
-    private TextView mCharLimitText;
+    private TextView mCharLimitText, mReplyTo, mUsername, mUserhandle;
     private Button mTweetButton;
     private ImageView mCloseButton;
     private CircleImageView mProfileCircle;
     private int charLimit = 140;
     private int charsLeft = 140;
-    private User mUser;
-
+    private User mUser, mUserReply;
+    private boolean mReply;
     public NewTweetDialogFragment(){
 
     }
@@ -65,21 +66,23 @@ public class NewTweetDialogFragment extends DialogFragment implements View.OnCli
     @Override
     public void onClick(View view) {
         if(mTweetEdit.length() <= 140) {
-            Tweet tweet = new Tweet(mUser, mTweetEdit.getText().toString());
+            Tweet tweet = new Tweet(mUser, mTweetEdit.getText().toString(), mUserReply.getName());
             FilterDialogListener listener = (FilterDialogListener) getActivity();
-            listener.onFinishFilterDialog(tweet);
+            listener.onFinishFilterDialog(tweet,mReply);
             dismiss();
         }
     }
 
     public interface FilterDialogListener {
-        void onFinishFilterDialog(Tweet tweet);
+        void onFinishFilterDialog(Tweet tweet, boolean reply);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mUser = (User) Parcels.unwrap(getArguments().getParcelable("user"));
+        mUserReply = (User) Parcels.unwrap(getArguments().getParcelable("user_reply"));
+        mReply = getArguments().getBoolean("reply");
     }
 
     @Override
@@ -91,11 +94,21 @@ public class NewTweetDialogFragment extends DialogFragment implements View.OnCli
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mReplyTo = (TextView) view.findViewById(R.id.tv_reply_to);
         mTweetEdit = (EditText) view.findViewById(R.id.et_tweet);
         mTweetButton = (Button) view.findViewById(R.id.btn_tweet);
         mCloseButton = (ImageView) view.findViewById(R.id.ib_close);
         mCharLimitText = (TextView) view.findViewById(R.id.tv_char_counter);
         mProfileCircle = (CircleImageView) view.findViewById(R.id.cv_profile_image);
+        mUsername = (TextView) view.findViewById(R.id.tv_action_name);
+        mUserhandle = (TextView) view.findViewById(R.id.tv_action_handle);
+        User userToDisplay;
+        if(mUserReply != null){
+            userToDisplay = mUserReply;
+        }
+        else{
+            userToDisplay = mUser;
+        }
 
         mTweetEdit.setText(PrefsManager.getInstance(getActivity()).getDraft());
         mTweetEdit.addTextChangedListener(new TextWatcher() {
@@ -122,6 +135,7 @@ public class NewTweetDialogFragment extends DialogFragment implements View.OnCli
             }
         });
         mTweetButton.setOnClickListener(this);
+
         mCloseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -146,8 +160,16 @@ public class NewTweetDialogFragment extends DialogFragment implements View.OnCli
                 }
             }
         });
+        mUsername.setText(userToDisplay.getName());
+        mUserhandle.setText(userToDisplay.getScreenName());
         mCharLimitText.setText(Integer.toString(charLimit));
-        Glide.with(getActivity()).load(mUser.getProfileImage()).into(mProfileCircle);
+        if(mReply){
+            mReplyTo.setVisibility(View.VISIBLE);
+            mReplyTo.setText("In reply to " + userToDisplay.getScreenName());
+            mTweetEdit.setText(mUserReply.getScreenName());
+            mCharLimitText.setText(Integer.toString(charLimit - mUserReply.getScreenName().length()));
+        }
+        Glide.with(getActivity()).load(userToDisplay.getProfileImage()).into(mProfileCircle);
     }
 
 }

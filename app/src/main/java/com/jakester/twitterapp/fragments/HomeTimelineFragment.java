@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,12 +22,15 @@ import com.jakester.twitterapp.listener.EndlessScrollListener;
 import com.jakester.twitterapp.listener.TweetTouchCallback;
 import com.jakester.twitterapp.managers.InternetManager;
 import com.jakester.twitterapp.models.Tweet;
+import com.jakester.twitterapp.models.User;
 import com.jakester.twitterapp.network.TwitterClient;
+import com.jakester.twitterapp.util.TwitterContstants;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 
@@ -35,7 +40,7 @@ import cz.msebera.android.httpclient.Header;
  * Created by Jake on 10/4/2017.
  */
 
-public class HomeTimelineFragment extends Fragment  implements NewTweetDialogFragment.FilterDialogListener, TweetTouchCallback {
+public class HomeTimelineFragment extends Fragment  implements TweetTouchCallback {
 
     ArrayList<Tweet> tweets;
     TweetAdapter mAdapter;
@@ -93,6 +98,44 @@ public class HomeTimelineFragment extends Fragment  implements NewTweetDialogFra
         return v;
     }
 
+    public void postTweet(final Tweet tweet, boolean reply) {
+        client.postTweet(tweet.getTweet(), new JsonHttpResponseHandler(){
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                Log.d("OBJECT", response.toString());
+                addTweet(tweet);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                Log.d("ARRAY", response.toString());
+                addTweet(tweet);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Log.d("TwitterClient", errorResponse.toString());
+                throwable.printStackTrace();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                Log.d("TwitterClient", errorResponse.toString());
+                throwable.printStackTrace();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Log.d("TwitterClient", responseString);
+                throwable.printStackTrace();
+            }
+        });
+    }
+
+    public interface NewTweetCallback {
+        void onTweetAction(Tweet tweet, boolean reply);
+    }
+
     public void populateTimeline(int page, final boolean refresh){
         client.getHomeTimeline(page, new JsonHttpResponseHandler() {
             @Override
@@ -126,41 +169,7 @@ public class HomeTimelineFragment extends Fragment  implements NewTweetDialogFra
         });
     }
 
-    @Override
-    public void onFinishFilterDialog(final Tweet tweet) {
-        client.postTweet(tweet.getTweet(), new JsonHttpResponseHandler(){
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                Log.d("OBJECT", response.toString());
-                addTweet(tweet);
-            }
 
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                Log.d("ARRAY", response.toString());
-                addTweet(tweet);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                Log.d("TwitterClient", errorResponse.toString());
-                throwable.printStackTrace();
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                Log.d("TwitterClient", errorResponse.toString());
-                throwable.printStackTrace();
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Log.d("TwitterClient", responseString);
-                throwable.printStackTrace();
-            }
-        });
-
-    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -205,7 +214,7 @@ public class HomeTimelineFragment extends Fragment  implements NewTweetDialogFra
             retweetTweet(tweet);
         }
         else if(view.getId() == R.id.iv_reply) {
-            //replyTweet(tweet.getFavorited(), tweet.getTweetId());
+            ((HomeTimelineActivity) getActivity()).showNewTweetDialog(true, tweet.getUser());
         }
     }
 
@@ -246,38 +255,6 @@ public class HomeTimelineFragment extends Fragment  implements NewTweetDialogFra
     }
 
     private void retweetTweet(final Tweet tweet){
-        client.reTweet(tweet.getRetweeted(), tweet.getTweetId(), new JsonHttpResponseHandler(){
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                Log.d("OBJECT", response.toString());
-                tweet.setRetweeted(!tweet.getRetweeted());
-                tweet.setRetweetCount(tweet.getRetweeted());
-                tweet.save();
-            }
 
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                Log.d("ARRAY", response.toString());
-                //addTweet(tweet);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                Log.d("TwitterClient", errorResponse.toString());
-                throwable.printStackTrace();
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                Log.d("TwitterClient", errorResponse.toString());
-                throwable.printStackTrace();
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Log.d("TwitterClient", responseString);
-                throwable.printStackTrace();
-            }
-        });
     }
 }
