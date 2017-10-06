@@ -1,8 +1,11 @@
 package com.jakester.twitterapp.models;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcel;
+
+import java.util.ArrayList;
 
 /**
  * Created by Jake on 9/28/2017.
@@ -36,6 +39,26 @@ public class User {
         user.followers = json.getInt("followers_count");
 
         return user;
+    }
+
+    public static ArrayList<User> fromJson(JSONArray jsonArray) {
+        ArrayList<User> users = new ArrayList<User>(jsonArray.length());
+
+        for (int i=0; i < jsonArray.length(); i++) {
+            JSONObject userJson = null;
+            try {
+                userJson = jsonArray.getJSONObject(i);
+                User user = fromJSON(userJson);
+                users.add(user);
+            } catch (Exception e) {
+                e.printStackTrace();
+                continue;
+            }
+
+
+        }
+
+        return users;
     }
 
     public long getUserId() { return mUserId; }

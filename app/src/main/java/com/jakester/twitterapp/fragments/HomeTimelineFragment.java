@@ -89,8 +89,6 @@ public class HomeTimelineFragment extends Fragment  implements NewTweetDialogFra
 
 
 
-
-
         return v;
     }
 

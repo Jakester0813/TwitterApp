@@ -39,6 +39,8 @@ public class Tweet extends BaseModel {
 	Long id;
 	// Define table fields
 	@Column
+	String tweetId;
+	@Column
 	String timestamp;
 	@Column
 	String timestampDetail;
@@ -64,8 +66,12 @@ public class Tweet extends BaseModel {
 	boolean favorited;
 	@Column
 	boolean retweeted;
+	@Column
+	String retweetedBy;
 
 	User mUser;
+
+
 
 
 	public Tweet(){
@@ -103,6 +109,7 @@ public class Tweet extends BaseModel {
 				this.timestampDetail = "I AM ALSO ERROR";
 			}
 			this.mUser = User.fromJSON(object.getJSONObject("user"));
+			this.tweetId = object.getString("id_str");
 			this.userImage = mUser.getProfileImage();
 			this.userName = mUser.getName();
 			this.userHandle = mUser.getScreenName();
@@ -116,6 +123,7 @@ public class Tweet extends BaseModel {
 			this.favoritedCount = object.getInt("favorite_count");
 			this.retweeted = object.getBoolean("retweeted");
 			this.retweetCount = object.getInt("retweet_count");
+			this.retweetedBy = object.optString("in_reply_to_screen_name","");
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -184,6 +192,8 @@ public class Tweet extends BaseModel {
 		return sb.toString();
 	}
 
+	public String getTweetId() { return tweetId; }
+
 	public String getTimestamp(){
 		return timestamp;
 	}
@@ -231,4 +241,13 @@ public class Tweet extends BaseModel {
 	public boolean getFavorited() { return favorited; }
 
 	public int getFavoritedCount() { return favoritedCount; }
+
+	public String getRetweetedBy(){
+		if(!retweetedBy.equals("null")){
+			return "Replying to @" + retweetedBy;
+		}
+		else{
+			return "";
+		}
+	}
 }

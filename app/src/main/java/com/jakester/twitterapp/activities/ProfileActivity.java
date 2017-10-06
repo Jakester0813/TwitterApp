@@ -1,5 +1,6 @@
 package com.jakester.twitterapp.activities;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +20,8 @@ import com.bumptech.glide.Glide;
 import com.jakester.twitterapp.R;
 import com.jakester.twitterapp.adapter.TweetAdapter;
 import com.jakester.twitterapp.application.TwitterApplication;
+import com.jakester.twitterapp.listener.EndlessScrollListener;
+import com.jakester.twitterapp.managers.InternetManager;
 import com.jakester.twitterapp.models.Tweet;
 import com.jakester.twitterapp.models.User;
 import com.jakester.twitterapp.network.TwitterClient;
@@ -32,7 +35,7 @@ import org.parceler.Parcels;
 import cz.msebera.android.httpclient.Header;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
     CircleImageView mProfileImage;
     ImageView mBackgroundImage;
@@ -41,6 +44,8 @@ public class ProfileActivity extends AppCompatActivity {
     ProgressBar mProgress;
     RecyclerView mTweetsRecycler;
     LinearLayoutManager mLayoutManager;
+
+    private EndlessScrollListener scrollListener;
     TweetAdapter mAdapter;
     TwitterClient mClient;
     User mUser;
@@ -63,10 +68,10 @@ public class ProfileActivity extends AppCompatActivity {
         mUserHandle = (TextView) findViewById(R.id.tv_profile_handle);
         mDescription = (TextView) findViewById(R.id.tv_profile_description);
         mLocation = (TextView) findViewById(R.id.tv_profile_location);
-        mNumFollowing = (TextView) findViewById(R.id.tv_followers_num);
-        mFollowingText = (TextView) findViewById(R.id.tv_followers_text);
-        mNumFollowers = (TextView) findViewById(R.id.tv_following_num);
-        mFollowersText = (TextView) findViewById(R.id.tv_following_text);
+        mNumFollowing = (TextView) findViewById(R.id.tv_following_num);
+        mFollowingText = (TextView) findViewById(R.id.tv_following_text);
+        mNumFollowers = (TextView) findViewById(R.id.tv_followers_num);
+        mFollowersText = (TextView) findViewById(R.id.tv_followers_text);
         String url = mUser.getProfileImage();
         url = url.replace("_normal","");
         Glide.with(this).load(url).into(mProfileImage);
@@ -81,7 +86,7 @@ public class ProfileActivity extends AppCompatActivity {
         mDescription.setText(mUser.getDescription());
         mLocation.setText(mUser.getLocation());
         mNumFollowing.setText(Integer.toString(mUser.getFollowing()));
-        mNumFollowers.setText(Integer.toString(mUser.getFollowing()));
+        mNumFollowers.setText(Integer.toString(mUser.getFollowers()));
 
         mProgress = (ProgressBar) findViewById(R.id.pb_tweet);
         mTweetsRecycler = (RecyclerView) findViewById(R.id.rv_user_tweets);
@@ -89,8 +94,25 @@ public class ProfileActivity extends AppCompatActivity {
         mTweetsRecycler.setLayoutManager(mLayoutManager);
         mAdapter = new TweetAdapter(this);
         mTweetsRecycler.setAdapter(mAdapter);
+        scrollListener = new EndlessScrollListener(mLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to the bottom of the list
+                if(InternetManager.getInstance(ProfileActivity.this).isInternetAvailable()) {
+                    loadUserTweets(mAdapter.getTweet(totalItemsCount-1).getTweetId());
+                }
+            }
+        };
+        mTweetsRecycler.addOnScrollListener(scrollListener);
+
+        mFollowingText.setOnClickListener(this);
+        mNumFollowing.setOnClickListener(this);
+        mFollowersText.setOnClickListener(this);
+        mNumFollowers.setOnClickListener(this);
+
         showProgressBar();
-        loadUserTweets();
+        loadUserTweets("");
     }
 
     @Override
@@ -132,8 +154,8 @@ public class ProfileActivity extends AppCompatActivity {
             miActionProgressItem.setVisible(false);
     }
 
-    public void loadUserTweets(){
-        mClient.getUserTimeline(Long.toString(mUser.getUserId()), new JsonHttpResponseHandler(){
+    public void loadUserTweets(String id){
+        mClient.getUserTimeline(Long.toString(mUser.getUserId()), "", new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 mAdapter.addTweets(Tweet.fromJson(response));
@@ -154,4 +176,17 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onClick(View view) {
+        if(view.getId() == R.id.tv_following_num || view.getId() == R.id.tv_following_text){
+            Intent i = new Intent(ProfileActivity.this, FollowsActivity.class);
+            i.putExtra("id",Long.toString(mUser.getUserId()));
+            startActivity(i);
+        }
+        else if (view.getId() == R.id.tv_followers_num || view.getId() == R.id.tv_followers_text){
+            Intent i = new Intent(ProfileActivity.this, FollowersActivity.class);
+            i.putExtra("id",Long.toString(mUser.getUserId()));
+            startActivity(i);
+        }
+    }
 }

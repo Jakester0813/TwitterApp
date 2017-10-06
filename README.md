@@ -18,15 +18,15 @@ The following **required** functionality is completed:
   * [x] User can click a “Compose” icon in the Action Bar on the top right
   * [x] User can then enter a new tweet and post this to twitter
   * [x] User is taken back to home timeline with **new tweet visible** in timeline
-* [x] (W)User can **switch between Timeline and Mention views using tabs**
-  * [x] (W)User can view their home timeline tweets.
-  * [x] (W)User can view the recent mentions of their username.
+* [x] User can **switch between Timeline and Mention views using tabs**
+  * [x] User can view their home timeline tweets.
+  * [x] User can view the recent mentions of their username.
 * [x] User can navigate to **view their own profile**
   * [X] User can see picture, tagline, # of followers, # of following, and tweets on their profile.
 * [x] User can **click on the profile image** in any tweet to see **another user's** profile.
  * [x] User can see picture, tagline, # of followers, # of following, and tweets of clicked user.
  * [x] Profile view includes that user's timeline
-* [ ] (T)User can [infinitely paginate](http://guides.codepath.com/android/Endless-Scrolling-with-AdapterViews-and-RecyclerView) any of these timelines (home, mentions, user) by scrolling to the bottom
+* [x] User can [infinitely paginate](http://guides.codepath.com/android/Endless-Scrolling-with-AdapterViews-and-RecyclerView) any of these timelines (home, mentions, user) by scrolling to the bottom
 
 The following **optional** features are implemented:
 
@@ -37,7 +37,7 @@ The following **optional** features are implemented:
 * [x] User can tap a tweet to **open a detailed tweet view**
     * [ ] (W)User can take favorite (and unfavorite) or retweet actions on a tweet
 * [ ] (T)User can **select "reply" from detail view to respond to a tweet**
-* [ ] (T)User can view following / followers list through the profile
+* [x] User can view following / followers list through the profile
 * [x] Implements robust error handling, [check if internet is available](http://guides.codepath.com/android/Sending-and-Managing-Network-Requests#checking-for-network-connectivity), handle error cases, network failures
 * [x] When a network request is sent, user sees an [indeterminate progress indicator](http://guides.codepath.com/android/Handling-ProgressBars#progress-within-actionbar)
 * [ ] (F)User can **"reply" to any tweet on their home timeline**
@@ -66,6 +66,7 @@ The following **bonus** features are implemented:
 The following **additional** features are implemented:
 
 * [ ] (F)Improve the user interface and theme the app to feel **Twitter branded**
+* [x] (F)If the tweet is in reply to another tweet, show the user that the tweet is responding to
 
 ## Video Walkthrough
 

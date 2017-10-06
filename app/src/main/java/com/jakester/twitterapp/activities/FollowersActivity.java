@@ -1,104 +1,94 @@
-package com.jakester.twitterapp.fragments;
+package com.jakester.twitterapp.activities;
 
+import android.app.AlertDialog;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.jakester.twitterapp.R;
-import com.jakester.twitterapp.activities.HomeTimelineActivity;
-import com.jakester.twitterapp.adapter.TweetAdapter;
+import com.jakester.twitterapp.adapter.UserAdapter;
 import com.jakester.twitterapp.application.TwitterApplication;
 import com.jakester.twitterapp.listener.EndlessScrollListener;
 import com.jakester.twitterapp.managers.InternetManager;
 import com.jakester.twitterapp.models.Tweet;
+import com.jakester.twitterapp.models.User;
 import com.jakester.twitterapp.network.TwitterClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
 
-/**
- * Created by Jake on 10/4/2017.
- */
+public class FollowersActivity extends AppCompatActivity{
 
-public class MentionsTimelineFragment extends Fragment {
-    private EndlessScrollListener scrollListener;
     ArrayList<Tweet> tweets;
-    TweetAdapter mAdapter;
+    UserAdapter mAdapter;
     RecyclerView mTweetRecycler;
     LinearLayoutManager mManager;
+
+    AlertDialog noInternetDialog;
     private TwitterClient client;
 
-    //inflation happens inside onCreateView
-    @Nullable
+
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_mentions_list, container, false);
-        mTweetRecycler = (RecyclerView) v.findViewById(R.id.rv_tweets);
-        mManager = new LinearLayoutManager(getContext());
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_user_follows);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("Following");
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setTitleTextColor(Color.BLACK);
+        noInternetDialog = InternetManager.getInstance(this).noInternetDialog();
+        final String id = getIntent().getStringExtra("id");
+        mTweetRecycler = (RecyclerView) findViewById(R.id.rv_follows);
+        mManager = new LinearLayoutManager(this);
         mTweetRecycler.setLayoutManager(mManager);
 
-        mAdapter = new TweetAdapter(getContext());
+        mAdapter = new UserAdapter(this);
         mTweetRecycler.setAdapter(mAdapter);
-
-
-
-        return v;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        client = TwitterApplication.getRestClient();
-        scrollListener = new EndlessScrollListener(mManager) {
+        EndlessScrollListener scrollListener = new EndlessScrollListener(mManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 // Triggered only when new data needs to be appended to the list
                 // Add whatever code is needed to append new items to the bottom of the list
-                if(InternetManager.getInstance(getContext()).isInternetAvailable()) {
-                    populateMentionsTimeline(mAdapter.getTweet(totalItemsCount-1).getTweetId());
-                }
-                else{
-                    ((HomeTimelineActivity)getActivity()).showNoInternetDialog();
+                if(InternetManager.getInstance(FollowersActivity.this).isInternetAvailable()) {
+                    getFollowers(id, page);
                 }
             }
         };
         mTweetRecycler.addOnScrollListener(scrollListener);
-        populateMentionsTimeline("");
+
+        client = TwitterApplication.getRestClient();
+
+        getFollowers(id, 0);
     }
 
-    public void addItems(ArrayList<Tweet> tweets){
-        mAdapter.addTweets(tweets);
-    }
-
-    public void populateMentionsTimeline(String maxId){
-        ((HomeTimelineActivity)getActivity()).showProgressBar();
-        client.getMentionsTimeline(maxId,new JsonHttpResponseHandler() {
+    public void getFollowers(String id, int page){
+        client.getFollowers(id, page, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+                    JSONArray users = response.getJSONArray("users");
+                    mAdapter.addUsers(User.fromJson(users));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 Log.d("OBJECT", response.toString());
             }
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                ((HomeTimelineActivity)getActivity()).hideProgressBar();
-                addItems(Tweet.fromJson(response));
+                Log.d("ARRAY", response.toString());
 
             }
 
@@ -120,6 +110,20 @@ public class MentionsTimelineFragment extends Fragment {
                 throwable.printStackTrace();
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+    }
+
+    public void showNoInternetDialog(){
+        noInternetDialog.show();
     }
 
 }

@@ -45,6 +45,10 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewhol
         notifyItemChanged(0,tweet);
     }
 
+    public Tweet getTweet(int position){
+        return mTweets.get(position);
+    }
+
     public void clear() {
         this.mTweets.clear();
         notifyDataSetChanged();
@@ -71,16 +75,15 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewhol
 
     public class TweetViewholder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        
-
         public ImageView mProfileImage, mEmbededImage, mReplyImage, mRetweetImage, mFavoriteImage;
-        public TextView mUserName, mUserHandle, mTimeStamp, mRetweetsNum, mFavoritesNum;
+        public TextView mRetweetedBy, mUserName, mUserHandle, mTimeStamp, mRetweetsNum, mFavoritesNum;
         public LinkifiedTextView mBody;
         public Tweet mTweet;
         public VideoView mEmbededVideo;
 
         public TweetViewholder(View itemView) {
             super(itemView);
+            this.mRetweetedBy = (TextView) itemView.findViewById(R.id.tv_replying_to);
             this.mProfileImage = (ImageView) itemView.findViewById(R.id.iv_profile_image);
             this.mUserName = (TextView) itemView.findViewById(R.id.tv_username);
             this.mUserHandle = (TextView) itemView.findViewById(R.id.tv_user_handle);
@@ -99,6 +102,10 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewhol
         }
 
         public void bind(Tweet tweet){
+            if(!tweet.getRetweetedBy().equals("")) {
+                this.mRetweetedBy.setText(tweet.getRetweetedBy());
+                this.mRetweetedBy.setVisibility(View.VISIBLE);
+            }
             Glide.with(mContext).load(tweet.getUserImageUrl()).into(mProfileImage);
             this.mUserName.setText(tweet.getUserName());
             this.mUserHandle.setText(tweet.getUserHandle());

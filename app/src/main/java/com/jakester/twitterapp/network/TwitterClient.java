@@ -55,28 +55,24 @@ public class TwitterClient extends OAuthBaseClient {
 		client.get(apiUrl, params, handler);
 	}
 
-	public void getMentionsTimeline(AsyncHttpResponseHandler handler) {
+	public void getMentionsTimeline(String maxId, AsyncHttpResponseHandler handler) {
 		String apiUrl = getApiUrl("statuses/mentions_timeline.json");
 		// Can specify query string params directly or through RequestParams.
 		RequestParams params = new RequestParams();
 		params.put("count",40);
+		if(!maxId.equals(""))
+			params.put("max_id",maxId);
 		client.get(apiUrl, params, handler);
 	}
 
-	public void getHomeTimelineRefresh(int lastTweetId, AsyncHttpResponseHandler handler) {
-		String apiUrl = getApiUrl("statuses/home_timeline.json");
-		// Can specify query string params directly or through RequestParams.
-		RequestParams params = new RequestParams();
-		params.put("count",25);
-		params.put("since_id", lastTweetId);
-		client.get(apiUrl, params, handler);
-	}
 
 	// TwitterClient.java
 	public void postTweet(String body, AsyncHttpResponseHandler handler) {
 		String apiUrl = getApiUrl("statuses/update.json");
 		RequestParams params = new RequestParams();
 		params.put("status", body);
+
+
 		getClient().post(apiUrl, params, handler);
 	}
 
@@ -104,11 +100,31 @@ public class TwitterClient extends OAuthBaseClient {
 		client.get(apiUrl, params, handler);
 	}
 
-	public void getUserTimeline(String id, AsyncHttpResponseHandler handler) {
+	public void getUserTimeline(String id, String maxId, AsyncHttpResponseHandler handler) {
 		String apiUrl = getApiUrl("statuses/user_timeline.json");
 		RequestParams params = new RequestParams();
 		params.put("user_id", id);
+		if(!maxId.equals(""))
+			params.put("max_id",maxId);
 		client.get(apiUrl, params, handler);
+	}
+
+	public void getFollowers(String id, int page, AsyncHttpResponseHandler handler) {
+		String apiUrl = getApiUrl("followers/list.json");
+		RequestParams params = new RequestParams();
+		params.put("user_id", id);
+		params.put("count",50);
+		params.put("page", page);
+		getClient().get(apiUrl, params, handler);
+	}
+
+	public void getFollowing(String id, int page, AsyncHttpResponseHandler handler) {
+		String apiUrl = getApiUrl("friends/list.json");
+		RequestParams params = new RequestParams();
+		params.put("user_id", id);
+		params.put("count",50);
+		params.put("page", page);
+		getClient().get(apiUrl, params, handler);
 	}
 
 	/* 1. Define the endpoint URL with getApiUrl and pass a relative path to the endpoint
