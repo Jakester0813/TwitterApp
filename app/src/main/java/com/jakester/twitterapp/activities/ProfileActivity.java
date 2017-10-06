@@ -21,6 +21,7 @@ import com.jakester.twitterapp.R;
 import com.jakester.twitterapp.adapter.TweetAdapter;
 import com.jakester.twitterapp.application.TwitterApplication;
 import com.jakester.twitterapp.listener.EndlessScrollListener;
+import com.jakester.twitterapp.listener.TweetTouchCallback;
 import com.jakester.twitterapp.managers.InternetManager;
 import com.jakester.twitterapp.models.Tweet;
 import com.jakester.twitterapp.models.User;
@@ -35,7 +36,7 @@ import org.parceler.Parcels;
 import cz.msebera.android.httpclient.Header;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
+public class ProfileActivity extends AppCompatActivity implements View.OnClickListener, TweetTouchCallback {
 
     CircleImageView mProfileImage;
     ImageView mBackgroundImage;
@@ -92,7 +93,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         mTweetsRecycler = (RecyclerView) findViewById(R.id.rv_user_tweets);
         mLayoutManager = new LinearLayoutManager(this);
         mTweetsRecycler.setLayoutManager(mLayoutManager);
-        mAdapter = new TweetAdapter(this);
+        mAdapter = new TweetAdapter(getBaseContext(), this);
         mTweetsRecycler.setAdapter(mAdapter);
         scrollListener = new EndlessScrollListener(mLayoutManager) {
             @Override
@@ -188,5 +189,10 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             i.putExtra("id",Long.toString(mUser.getUserId()));
             startActivity(i);
         }
+    }
+
+    @Override
+    public void onClick(View view, Tweet tweet) {
+
     }
 }

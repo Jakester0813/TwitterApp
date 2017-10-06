@@ -16,6 +16,7 @@ import com.jakester.twitterapp.activities.HomeTimelineActivity;
 import com.jakester.twitterapp.adapter.TweetAdapter;
 import com.jakester.twitterapp.application.TwitterApplication;
 import com.jakester.twitterapp.listener.EndlessScrollListener;
+import com.jakester.twitterapp.listener.TweetTouchCallback;
 import com.jakester.twitterapp.managers.InternetManager;
 import com.jakester.twitterapp.models.Tweet;
 import com.jakester.twitterapp.network.TwitterClient;
@@ -32,7 +33,7 @@ import cz.msebera.android.httpclient.Header;
  * Created by Jake on 10/4/2017.
  */
 
-public class MentionsTimelineFragment extends Fragment {
+public class MentionsTimelineFragment extends Fragment implements TweetTouchCallback {
     private EndlessScrollListener scrollListener;
     ArrayList<Tweet> tweets;
     TweetAdapter mAdapter;
@@ -49,7 +50,7 @@ public class MentionsTimelineFragment extends Fragment {
         mManager = new LinearLayoutManager(getContext());
         mTweetRecycler.setLayoutManager(mManager);
 
-        mAdapter = new TweetAdapter(getContext());
+        mAdapter = new TweetAdapter(getContext(), this);
         mTweetRecycler.setAdapter(mAdapter);
 
 
@@ -122,4 +123,8 @@ public class MentionsTimelineFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onClick(View view, Tweet tweet) {
+
+    }
 }

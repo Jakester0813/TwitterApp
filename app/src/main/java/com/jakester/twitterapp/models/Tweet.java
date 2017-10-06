@@ -236,11 +236,34 @@ public class Tweet extends BaseModel {
 
 	public boolean getRetweeted() { return retweeted; }
 
+	public void setRetweeted (boolean retweet) {this.retweeted = retweet;}
+
 	public int getRetweetCount() { return retweetCount; }
+
+	public void setRetweetCount (boolean retweeted) {
+		if(getRetweeted()) {
+			this.retweetCount++;
+		}
+		else{
+			this.retweetCount--;
+		}
+	}
 
 	public boolean getFavorited() { return favorited; }
 
+	public void setFavorited(boolean favorite) {this.favorited = favorite;}
+
 	public int getFavoritedCount() { return favoritedCount; }
+
+	//This is to be called after the successful call to favorite and resetting favorited boolean
+	public void setFavoritedCount (boolean favorite) {
+		if(getFavorited()) {
+			this.favoritedCount++;
+		}
+		else{
+			this.favoritedCount--;
+		}
+	}
 
 	public String getRetweetedBy(){
 		if(!retweetedBy.equals("null")){

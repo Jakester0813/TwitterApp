@@ -15,6 +15,7 @@ import com.jakester.twitterapp.R;
 import com.jakester.twitterapp.activities.ProfileActivity;
 import com.jakester.twitterapp.activities.TweetActivity;
 import com.jakester.twitterapp.customwidgets.LinkifiedTextView;
+import com.jakester.twitterapp.listener.TweetTouchCallback;
 import com.jakester.twitterapp.models.Tweet;
 
 import org.parceler.Parcels;
@@ -29,10 +30,12 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewhol
 
     Context mContext;
     ArrayList<Tweet> mTweets;
+    TweetTouchCallback mCallback;
 
-    public TweetAdapter(Context context) {
+    public TweetAdapter(Context context, TweetTouchCallback callback) {
         this.mContext = context;
         this.mTweets = new ArrayList<Tweet>();
+        this.mCallback = callback;
     }
 
     public void addTweets(ArrayList<Tweet> tweets){
@@ -112,14 +115,19 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewhol
             this.mTimeStamp.setText(tweet.getTimestamp());
             this.mBody.setText(tweet.getTweet());
             this.mTweet = tweet;
+            this.mReplyImage.setOnClickListener(this);
+            this.mRetweetImage.setOnClickListener(this);
             this.mRetweetImage.setImageResource(tweet.getRetweeted() ? R.drawable.ic_retweeted : R.drawable.ic_retweet);
             if(tweet.getRetweetCount() > 0){
                 this.mRetweetsNum.setText(Integer.toString(tweet.getRetweetCount()));
             }
             this.mFavoriteImage.setImageResource(tweet.getFavorited() ? R.drawable.ic_favorite : R.drawable.ic_favorite_border);
+            this.mFavoriteImage.setOnClickListener(this);
             if(tweet.getFavoritedCount() > 0){
                 this.mFavoritesNum.setText(Integer.toString(tweet.getFavoritedCount()));
             }
+
+
         }
 
         @Override
@@ -129,8 +137,21 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewhol
                 userDetails.putExtra("user", Parcels.wrap(mTweet.getUser()));
                 mContext.startActivity(userDetails);
             }
-            else if(view.getId() == R.id.iv_favorite){
-
+            else if(view.getId() == R.id.iv_favorite || view.getId() == R.id.iv_retweet ||
+                    view.getId() == R.id.iv_reply){
+                if(view.getId() == R.id.iv_favorite){
+                    this.mFavoriteImage.setImageResource(mTweet.getFavorited() ?
+                            R.drawable.ic_favorite_border : R.drawable.ic_favorite);
+                    this.mFavoritesNum.setText(mTweet.getFavorited() ? Integer.toString(mTweet.getFavoritedCount()-1)
+                            : Integer.toString(mTweet.getFavoritedCount()+1));
+                }
+                else if(view.getId() == R.id.iv_retweet){
+                    this.mRetweetImage.setImageResource(mTweet.getRetweeted() ?
+                            R.drawable.ic_retweet : R.drawable.ic_retweeted);
+                    this.mRetweetsNum.setText(mTweet.getRetweeted() ? Integer.toString(mTweet.getRetweetCount()-1)
+                            : Integer.toString(mTweet.getRetweetCount()+1));
+                }
+                mCallback.onClick(view, mTweet);
             }
             else if(view.getId() == R.id.iv_retweet){
 

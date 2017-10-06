@@ -61,12 +61,18 @@ The following **bonus** features are implemented:
 * [ ] (T)Enable your app to [receive implicit intents](http://guides.codepath.com/android/Using-Intents-to-Create-Flows#receiving-implicit-intents) from other apps.  When a link is shared from a web browser, it should pre-fill the text and title of the web page when composing a tweet.
 * [x] When a user leaves the compose view without publishing and there is existing text, prompt to save or delete the draft.  The draft can be resumed from the compose view.
 * [x] On the profile screen, leverage the [CoordinatorLayout](http://guides.codepath.com/android/Handling-Scrolls-with-CoordinatorLayout#responding-to-scroll-events) to [apply scrolling behavior](https://hackmd.io/s/SJyDOCgU) as the user scrolls through the profile timeline.
-* [ ] (T)User can view their direct messages (or send new ones)
+* [ ] (F)User can view their direct messages (or send new ones)
 
 The following **additional** features are implemented:
 
 * [ ] (F)Improve the user interface and theme the app to feel **Twitter branded**
-* [x] (F)If the tweet is in reply to another tweet, show the user that the tweet is responding to
+* [x] If the tweet is in reply to another tweet, show the user that the tweet is responding to
+* [x] The User is able to retweet or favorite any tweet on the home timeline
+
+Fixes to do list:
+* [ ] Truncate the handle on each tweet
+* [ ] Add borders for recyclerviews
+
 
 ## Video Walkthrough
 
