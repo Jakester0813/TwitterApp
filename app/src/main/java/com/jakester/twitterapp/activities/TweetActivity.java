@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.jakester.twitterapp.R;
@@ -17,6 +18,7 @@ import com.jakester.twitterapp.fragments.NewTweetDialogFragment;
 import com.jakester.twitterapp.models.Tweet;
 import com.jakester.twitterapp.models.User;
 import com.jakester.twitterapp.network.TwitterClient;
+import com.jakester.twitterapp.util.PatternEditableBuilder;
 import com.jakester.twitterapp.util.TwitterContstants;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -24,6 +26,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcels;
+
+import java.util.regex.Pattern;
 
 import cz.msebera.android.httpclient.Header;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -66,6 +70,26 @@ public class TweetActivity extends AppCompatActivity implements NewTweetDialogFr
         mNumOfRetweets.setText(Integer.toString(mTweet.getRetweetCount()));
         mLikesImage.setImageResource(mTweet.getFavorited() ? R.drawable.ic_favorite : R.drawable.ic_favorite_border);
         mNumOfLikes.setText(Integer.toString(mTweet.getFavoritedCount()));
+
+
+        new PatternEditableBuilder().
+                addPattern(Pattern.compile("\\@(\\w+)"), getResources().getColor(R.color.colorAccent),
+                        new PatternEditableBuilder.SpannableClickedListener() {
+                            @Override
+                            public void onSpanClicked(String text) {
+                                Toast.makeText(TweetActivity.this, "USER!!: " + text,
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        }).into(this.mTweetBody);
+        new PatternEditableBuilder().
+                addPattern(Pattern.compile("\\#(\\w+)"), getResources().getColor(R.color.colorAccent),
+                        new PatternEditableBuilder.SpannableClickedListener() {
+                            @Override
+                            public void onSpanClicked(String text) {
+                                Toast.makeText(TweetActivity.this, "Hashtag!!: " + text,
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        }).into(this.mTweetBody);
 
         mClient = TwitterApplication.getRestClient();
 
