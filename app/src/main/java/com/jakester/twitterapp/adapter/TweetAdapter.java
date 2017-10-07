@@ -2,12 +2,14 @@ package com.jakester.twitterapp.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.bumptech.glide.Glide;
@@ -17,10 +19,12 @@ import com.jakester.twitterapp.activities.TweetActivity;
 import com.jakester.twitterapp.customwidgets.LinkifiedTextView;
 import com.jakester.twitterapp.listener.TweetTouchCallback;
 import com.jakester.twitterapp.models.Tweet;
+import com.jakester.twitterapp.util.PatternEditableBuilder;
 
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 /**
  * Created by Jake on 9/27/2017.
@@ -78,11 +82,10 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewhol
 
     public class TweetViewholder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        public ImageView mProfileImage, mEmbededImage, mReplyImage, mRetweetImage, mFavoriteImage;
+        public ImageView mProfileImage, mReplyImage, mRetweetImage, mFavoriteImage;
         public TextView mRetweetedBy, mUserName, mUserHandle, mTimeStamp, mRetweetsNum, mFavoritesNum;
         public LinkifiedTextView mBody;
         public Tweet mTweet;
-        public VideoView mEmbededVideo;
 
         public TweetViewholder(View itemView) {
             super(itemView);
@@ -92,8 +95,6 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewhol
             this.mUserHandle = (TextView) itemView.findViewById(R.id.tv_user_handle);
             this.mTimeStamp = (TextView) itemView.findViewById(R.id.tv_time_stamp);
             this.mBody = (LinkifiedTextView) itemView.findViewById(R.id.tv_tweet_body);
-            this.mEmbededImage = (ImageView) itemView.findViewById(R.id.iv_tweet_image);
-            this.mEmbededVideo = (VideoView) itemView.findViewById(R.id.vv_tweet_video);
             this.mReplyImage = (ImageView) itemView.findViewById(R.id.iv_reply);
             this.mRetweetImage = (ImageView) itemView.findViewById(R.id.iv_retweet);
             this.mRetweetsNum = (TextView) itemView.findViewById(R.id.tv_retweet_num);
@@ -115,11 +116,24 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewhol
             this.mTimeStamp.setText(tweet.getTimestamp());
             this.mBody.setText(tweet.getTweet());
             this.mTweet = tweet;
-            if(!tweet.getImageUrl().equals("")){
-                Glide.with(mContext).load(tweet.getImageUrl()).into(mEmbededImage);
-                mEmbededImage.setVisibility(View.VISIBLE);
-            }
-
+            new PatternEditableBuilder().
+                    addPattern(Pattern.compile("\\@(\\w+)"), mContext.getResources().getColor(R.color.colorAccent),
+                            new PatternEditableBuilder.SpannableClickedListener() {
+                                @Override
+                                public void onSpanClicked(String text) {
+                                    Toast.makeText(mContext, "USER!!: " + text,
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            }).into(this.mBody);
+            new PatternEditableBuilder().
+                    addPattern(Pattern.compile("\\#(\\w+)"), mContext.getResources().getColor(R.color.colorAccent),
+                            new PatternEditableBuilder.SpannableClickedListener() {
+                                @Override
+                                public void onSpanClicked(String text) {
+                                    Toast.makeText(mContext, "Hashtag!!: " + text,
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            }).into(this.mBody);
             this.mReplyImage.setOnClickListener(this);
             this.mRetweetImage.setOnClickListener(this);
             this.mRetweetImage.setImageResource(tweet.getRetweeted() ? R.drawable.ic_retweeted : R.drawable.ic_retweet);
@@ -137,34 +151,25 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewhol
 
         @Override
         public void onClick(View view) {
-            if(view.getId()== R.id.iv_profile_image){
-                Intent userDetails = new Intent(mContext, ProfileActivity.class);
-                userDetails.putExtra("user", Parcels.wrap(mTweet.getUser()));
-                mContext.startActivity(userDetails);
-            }
-            else if(view.getId() == R.id.iv_favorite || view.getId() == R.id.iv_retweet ||
-                    view.getId() == R.id.iv_reply){
-                if(view.getId() == R.id.iv_favorite){
-                    this.mFavoriteImage.setImageResource(mTweet.getFavorited() ?
-                            R.drawable.ic_favorite_border : R.drawable.ic_favorite);
-                    this.mFavoritesNum.setText(mTweet.getFavorited() ? Integer.toString(mTweet.getFavoritedCount()-1)
-                            : Integer.toString(mTweet.getFavoritedCount()+1));
+            if(view.getId() != R.id.tv_tweet_body) {
+                if (view.getId() == R.id.iv_profile_image) {
+                    Intent userDetails = new Intent(mContext, ProfileActivity.class);
+                    userDetails.putExtra("user", Parcels.wrap(mTweet.getUser()));
+                    mContext.startActivity(userDetails);
+                } else {
+                    if (view.getId() == R.id.iv_favorite) {
+                        this.mFavoriteImage.setImageResource(mTweet.getFavorited() ?
+                                R.drawable.ic_favorite_border : R.drawable.ic_favorite);
+                        this.mFavoritesNum.setText(mTweet.getFavorited() ? Integer.toString(mTweet.getFavoritedCount() - 1)
+                                : Integer.toString(mTweet.getFavoritedCount() + 1));
+                    } else if (view.getId() == R.id.iv_retweet) {
+                        this.mRetweetImage.setImageResource(mTweet.getRetweeted() ?
+                                R.drawable.ic_retweet : R.drawable.ic_retweeted);
+                        this.mRetweetsNum.setText(mTweet.getRetweeted() ? Integer.toString(mTweet.getRetweetCount() - 1)
+                                : Integer.toString(mTweet.getRetweetCount() + 1));
+                    }
+                    mCallback.onClick(view, mTweet);
                 }
-                else if(view.getId() == R.id.iv_retweet){
-                    this.mRetweetImage.setImageResource(mTweet.getRetweeted() ?
-                            R.drawable.ic_retweet : R.drawable.ic_retweeted);
-                    this.mRetweetsNum.setText(mTweet.getRetweeted() ? Integer.toString(mTweet.getRetweetCount()-1)
-                            : Integer.toString(mTweet.getRetweetCount()+1));
-                }
-                mCallback.onClick(view, mTweet);
-            }
-            else if(view.getId() == R.id.iv_retweet){
-
-            }
-            else{
-                Intent tweetDetails = new Intent(mContext, TweetActivity.class);
-                tweetDetails.putExtra("tweet", Parcels.wrap(mTweet));
-                mContext.startActivity(tweetDetails);
             }
 
         }

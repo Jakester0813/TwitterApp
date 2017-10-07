@@ -158,6 +158,9 @@ public class NewTweetDialogFragment extends DialogFragment implements View.OnCli
                     }).show();
 
                 }
+                else{
+                    dismiss();
+                }
             }
         });
         mUsername.setText(userToDisplay.getName());

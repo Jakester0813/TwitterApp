@@ -38,10 +38,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_marginStart="2dp"
-            android:layout_weight="1"
+            android:maxLength="20"
             android:textColor="@color/secondaryTextColor"
             android:ellipsize="end"
-            android:text="TextView"
             android:layout_toEndOf="@+id/tv_username" />
 
         <TextView
@@ -49,7 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="-4dp"
             android:layout_marginStart="4dp"
             android:layout_weight="1"
             android:textColor="@color/secondaryTextColor"
@@ -89,22 +88,6 @@
             android:layout_toEndOf="@+id/iv_profile_image"
             android:layout_below="@+id/tv_replying_to" />
 
-        <ImageView
-            android:id="@+id/iv_tweet_image"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:visibility="gone"
-            android:layout_toEndOf="@+id/iv_profile_image"
-            android:layout_below="@+id/tv_tweet_body"
-            />
-
-    <VideoView
-        android:id="@+id/vv_tweet_video"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:visibility="gone"
-        android:layout_toEndOf="@+id/iv_profile_image"
-        android:layout_below="@+id/iv_tweet_image" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -112,7 +95,7 @@
         android:orientation="horizontal"
         android:layout_centerVertical="true"
         android:layout_toEndOf="@+id/iv_profile_image"
-        android:layout_below="@+id/vv_tweet_video">
+        android:layout_below="@+id/tv_tweet_body">
 
         <ImageView
             android:id="@+id/iv_reply"

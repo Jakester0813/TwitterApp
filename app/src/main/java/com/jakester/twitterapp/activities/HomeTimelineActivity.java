@@ -181,6 +181,11 @@ public class HomeTimelineActivity extends AppCompatActivity
         //}
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
     public void showFab(){
         fab.setVisibility(View.VISIBLE);
     }

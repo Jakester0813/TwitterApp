@@ -120,11 +120,6 @@ public class Tweet extends BaseModel {
 				this.mImageURL = text[text.length-1];
 				this.body.replace(this.mImageURL, "");
 			}
-			if(object.optJSONObject("entities").optJSONArray("urls").optJSONObject(0) != null) {
-				this.url = object.optJSONObject("entities").optJSONArray("urls").optJSONObject(0).optString("url");
-				this.displayUrl = object.optJSONObject("entities").optJSONArray("urls").optJSONObject(0).optString("display_url");
-				this.expandedUrl = object.optJSONObject("entities").optJSONArray("urls").optJSONObject(0).optString("expanded_url");
-			}
 			this.favorited = object.getBoolean("favorited");
 			this.favoritedCount = object.getInt("favorite_count");
 			this.retweeted = object.getBoolean("retweeted");

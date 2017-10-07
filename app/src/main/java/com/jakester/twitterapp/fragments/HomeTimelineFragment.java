@@ -1,5 +1,6 @@
 package com.jakester.twitterapp.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 
 import com.jakester.twitterapp.R;
 import com.jakester.twitterapp.activities.HomeTimelineActivity;
+import com.jakester.twitterapp.activities.TweetActivity;
 import com.jakester.twitterapp.adapter.TweetAdapter;
 import com.jakester.twitterapp.application.TwitterApplication;
 import com.jakester.twitterapp.listener.EndlessScrollListener;
@@ -216,6 +218,11 @@ public class HomeTimelineFragment extends Fragment  implements TweetTouchCallbac
         else if(view.getId() == R.id.iv_reply) {
             ((HomeTimelineActivity) getActivity()).showNewTweetDialog(true, tweet.getUser());
         }
+        else{
+            Intent tweetDetails = new Intent(getActivity(), TweetActivity.class);
+            tweetDetails.putExtra("tweet", Parcels.wrap(tweet));
+            startActivityForResult(tweetDetails, 1);
+        }
     }
 
     private void favoriteTweet(final Tweet tweet){
@@ -254,7 +261,47 @@ public class HomeTimelineFragment extends Fragment  implements TweetTouchCallbac
         });
     }
 
-    private void retweetTweet(final Tweet tweet){
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == 5){
+            Tweet tweet = Parcels.unwrap(data.getParcelableExtra("tweet"));
+            addTweet(tweet);
+        }
+    }
 
+    private void retweetTweet(final Tweet tweet){
+        client.reTweet(tweet.getRetweeted(), tweet.getTweetId(), new JsonHttpResponseHandler(){
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                Log.d("OBJECT", response.toString());
+                tweet.setRetweeted(!tweet.getRetweeted());
+                tweet.setFavoritedCount(tweet.getRetweeted());
+                tweet.save();
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                Log.d("ARRAY", response.toString());
+                //addTweet(tweet);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Log.d("TwitterClient", errorResponse.toString());
+                throwable.printStackTrace();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                Log.d("TwitterClient", errorResponse.toString());
+                throwable.printStackTrace();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Log.d("TwitterClient", responseString);
+                throwable.printStackTrace();
+            }
+        });
     }
 }
