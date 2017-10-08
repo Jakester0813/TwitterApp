@@ -29,12 +29,12 @@ public class User {
 
         user.name = json.getString("name");
         user.mUserId = json.getLong("id");
-        user.screenName = json.getString("screen_name");
+        user.screenName = "@" + json.getString("screen_name");
         user.location = json.getString("location");
         user.description = json.getString("description");
         user.profileImageURL = json.getString("profile_image_url");
         user.profileBackgroundImageUrl = json.optString("profile_banner_url");
-        user.profileBackgroundColor = json.getString("profile_link_color");
+        user.profileBackgroundColor = "#" + json.getString("profile_link_color");
         user.following = json.getInt("friends_count");
         user.followers = json.getInt("followers_count");
 
@@ -68,7 +68,7 @@ public class User {
     }
 
     public String getScreenName(){
-        return "@"+screenName;
+        return screenName;
     }
 
     public String getLocation() { return location; }
@@ -83,7 +83,7 @@ public class User {
         return profileBackgroundImageUrl;
     }
 
-    public String getBackgroundColor() { return "#" + profileBackgroundColor; }
+    public String getBackgroundColor() { return profileBackgroundColor; }
 
     public int getFollowing() { return following; }
 

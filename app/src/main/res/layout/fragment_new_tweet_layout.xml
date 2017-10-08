@@ -3,8 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:minWidth="275dp"
-    android:minHeight="200dp"
+    android:background="@color/colorAccent"
+    android:maxWidth="275dp"
+    android:maxHeight="200dp"
     android:padding="8dp">
     <ImageView
         xmlns:app="http://schemas.android.com/apk/res-auto"

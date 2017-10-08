@@ -17,6 +17,7 @@ import com.jakester.twitterapp.R;
 import com.jakester.twitterapp.activities.ProfileActivity;
 import com.jakester.twitterapp.activities.TweetActivity;
 import com.jakester.twitterapp.customwidgets.LinkifiedTextView;
+import com.jakester.twitterapp.databinding.TweetLayoutBinding;
 import com.jakester.twitterapp.listener.TweetTouchCallback;
 import com.jakester.twitterapp.models.Tweet;
 import com.jakester.twitterapp.util.PatternEditableBuilder;
@@ -81,7 +82,7 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewhol
     }
 
     public class TweetViewholder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
+        TweetLayoutBinding binding;
         public ImageView mProfileImage, mReplyImage, mRetweetImage, mFavoriteImage;
         public TextView mRetweetedBy, mUserName, mUserHandle, mTimeStamp, mRetweetsNum, mFavoritesNum;
         public LinkifiedTextView mBody;
@@ -106,14 +107,14 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewhol
         }
 
         public void bind(Tweet tweet){
-            if(!tweet.getRetweetedBy().equals("")) {
-                this.mRetweetedBy.setText(tweet.getRetweetedBy());
-                this.mRetweetedBy.setVisibility(View.VISIBLE);
-            }
+
+
             Glide.with(mContext).load(tweet.getUserImageUrl()).into(mProfileImage);
             this.mUserName.setText(tweet.getUserName());
             this.mUserHandle.setText(tweet.getUserHandle());
             this.mTimeStamp.setText(tweet.getTimestamp());
+            this.mRetweetedBy.setText(tweet.getRetweetedBy());
+            this.mRetweetedBy.setVisibility(!tweet.getRetweetedBy().equals("") ? View.VISIBLE : View.GONE);
             this.mBody.setText(tweet.getTweet());
             this.mTweet = tweet;
             new PatternEditableBuilder().
@@ -137,14 +138,11 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewhol
             this.mReplyImage.setOnClickListener(this);
             this.mRetweetImage.setOnClickListener(this);
             this.mRetweetImage.setImageResource(tweet.getRetweeted() ? R.drawable.ic_retweeted : R.drawable.ic_retweet);
-            if(tweet.getRetweetCount() > 0){
-                this.mRetweetsNum.setText(Integer.toString(tweet.getRetweetCount()));
-            }
+            this.mRetweetsNum.setText(Integer.toString(tweet.getRetweetCount()));
             this.mFavoriteImage.setImageResource(tweet.getFavorited() ? R.drawable.ic_favorite : R.drawable.ic_favorite_border);
             this.mFavoriteImage.setOnClickListener(this);
-            if(tweet.getFavoritedCount() > 0){
-                this.mFavoritesNum.setText(Integer.toString(tweet.getFavoritedCount()));
-            }
+            this.mFavoritesNum.setText(Integer.toString(tweet.getFavoritedCount()));
+
 
 
         }

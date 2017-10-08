@@ -67,11 +67,10 @@ The following **additional** features are implemented:
 * [x] If the tweet is in reply to another tweet, show the user that the tweet is responding to
 * [x] The User is able to retweet or favorite any tweet on the home timeline
 * [x] Added a splash screen
+* [ ] Add navigation back buttons for tweets and profiles
 
 Fixes to do list:
-* [ ] Add borders for recyclerviews
 * [ ] New Tweet dialog could use some touching up
-* [ ] Values arent consistent in recyclerview values
 * [ ] Add background for profiles that don't have a image
 * [ ] Search bar needs to be fixed to not remove profile icon
 

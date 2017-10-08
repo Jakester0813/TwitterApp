@@ -23,6 +23,7 @@ import com.jakester.twitterapp.application.TwitterApplication;
 import com.jakester.twitterapp.listener.EndlessScrollListener;
 import com.jakester.twitterapp.listener.TweetTouchCallback;
 import com.jakester.twitterapp.managers.InternetManager;
+import com.jakester.twitterapp.models.SimpleDividerItemDecoration;
 import com.jakester.twitterapp.models.Tweet;
 import com.jakester.twitterapp.models.User;
 import com.jakester.twitterapp.network.TwitterClient;
@@ -74,7 +75,7 @@ public class HomeTimelineFragment extends Fragment  implements TweetTouchCallbac
             }
         };
         mTweetRecycler.addOnScrollListener(scrollListener);
-
+        mTweetRecycler.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
         swipeContainer = (SwipeRefreshLayout) v.findViewById(R.id.srl_swipe_container);
         // Setup refresh listener which triggers new data loading
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
