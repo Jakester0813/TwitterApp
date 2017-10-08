@@ -20,6 +20,12 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="AppTheme.NoActionBarSplash">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowDisablePreview">true</item>
+    </style>
+
     <style name="ToolBarStyle" parent="Theme.AppCompat.DayNight">
         <item name="colorControlNormal">@color/colorAccent</item>
         <item name="android:textColorPrimary">@color/colorAccent</item>
