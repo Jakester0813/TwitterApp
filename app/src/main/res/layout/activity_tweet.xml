@@ -84,18 +84,18 @@
             android:layout_height="25dp"
             android:src="@drawable/ic_retweet"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="7dp"
-            android:layout_toStartOf="@+id/tv_retweet_num" />
+            android:layout_centerHorizontal="true" />
+
         <TextView
             android:id="@+id/tv_retweet_num"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_height="25dp"
-            android:textColor="@color/secondaryTextColor"
             android:gravity="center_vertical"
-            android:layout_marginEnd="40dp"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true" />
+            android:layout_marginLeft="4dp"
+            android:textColor="@color/secondaryTextColor"
+            android:layout_alignTop="@+id/iv_retweet"
+            android:layout_toEndOf="@+id/iv_retweet" />
 
         <ImageView
             android:id="@+id/iv_favorite"
@@ -107,11 +107,10 @@
             android:layout_marginEnd="7dp" />
         <TextView
             android:id="@+id/tv_favorite_num"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:textColor="@color/secondaryTextColor"
-            android:layout_marginLeft="8dp"
-
+            android:layout_marginLeft="4dp"
             android:gravity="center_vertical"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"

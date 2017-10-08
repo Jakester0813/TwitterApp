@@ -69,10 +69,8 @@ The following **additional** features are implemented:
 
 Fixes to do list:
 * [ ] Add borders for recyclerviews
-* [ ] Alignment is off for retweet on Home Timeline
 * [ ] New Tweet dialog could use some touching up
-* [ ] Reply to is pretty buggy
-* [ ] Favorite/Retweet count is not consistent between details and timeline
+* [ ] Values arent consistent in recyclerview values
 * [ ] Add background for profiles that don't have a image
 * [ ] Search bar needs to be fixed to not remove profile icon
 

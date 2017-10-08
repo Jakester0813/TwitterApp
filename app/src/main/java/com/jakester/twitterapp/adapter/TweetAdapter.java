@@ -117,7 +117,7 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewhol
             this.mBody.setText(tweet.getTweet());
             this.mTweet = tweet;
             new PatternEditableBuilder().
-                    addPattern(Pattern.compile("\\@(\\w+)"), mContext.getResources().getColor(R.color.colorAccent),
+                    addPattern(Pattern.compile("\\@(\\w+)"), mContext.getResources().getColor(R.color.colorPrimary),
                             new PatternEditableBuilder.SpannableClickedListener() {
                                 @Override
                                 public void onSpanClicked(String text) {
@@ -126,7 +126,7 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewhol
                                 }
                             }).into(this.mBody);
             new PatternEditableBuilder().
-                    addPattern(Pattern.compile("\\#(\\w+)"), mContext.getResources().getColor(R.color.colorAccent),
+                    addPattern(Pattern.compile("\\#(\\w+)"), mContext.getResources().getColor(R.color.colorPrimary),
                             new PatternEditableBuilder.SpannableClickedListener() {
                                 @Override
                                 public void onSpanClicked(String text) {
