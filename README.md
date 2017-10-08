@@ -42,7 +42,7 @@ The following **optional** features are implemented:
 * [x] When a network request is sent, user sees an [indeterminate progress indicator](http://guides.codepath.com/android/Handling-ProgressBars#progress-within-actionbar)
 * [x] User can **"reply" to any tweet on their home timeline**
   * [x] The user that wrote the original tweet is automatically "@" replied in compose
-* [ ] User can **search for tweets matching a particular query** and see results
+* [x] User can **search for tweets matching a particular query** and see results
 * [x] Usernames and hashtags are styled and clickable within tweets [using clickable spans](http://guides.codepath.com/android/Working-with-the-TextView#creating-clickable-styled-spans)
 
 
@@ -74,6 +74,7 @@ Fixes to do list:
 * [ ] Reply to is pretty buggy
 * [ ] Favorite/Retweet count is not consistent between details and timeline
 * [ ] Add background for profiles that don't have a image
+* [ ] Search bar needs to be fixed to not remove profile icon
 
 
 ## Video Walkthrough

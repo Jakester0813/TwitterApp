@@ -70,7 +70,7 @@ public class SearchFragment extends Fragment  implements TweetTouchCallback {
                 // Triggered only when new data needs to be appended to the list
                 // Add whatever code is needed to append new items to the bottom of the list
                 if(InternetManager.getInstance(getContext()).isInternetAvailable()) {
-                    searchTweets(mQuery,tweets.get(totalItemsCount-1).getTweetId());
+                    searchTweets(mQuery,mAdapter.getTweet(totalItemsCount-1).getTweetId());
                 }
                 else{
                     ((HomeTimelineActivity)getActivity()).showNoInternetDialog();
