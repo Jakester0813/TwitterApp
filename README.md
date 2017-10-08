@@ -63,7 +63,7 @@ The following **bonus** features are implemented:
 
 The following **additional** features are implemented:
 
-* [ ] (F)Improve the user interface and theme the app to feel **Twitter branded**
+* [x] Improve the user interface and theme the app to feel **Twitter branded**
 * [x] If the tweet is in reply to another tweet, show the user that the tweet is responding to
 * [x] The User is able to retweet or favorite any tweet on the home timeline
 

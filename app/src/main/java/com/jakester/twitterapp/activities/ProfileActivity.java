@@ -59,9 +59,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         mUser = Parcels.unwrap(getIntent().getParcelableExtra("user"));
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(mUser.getName());
+        toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
-        toolbar.setTitleTextColor(Color.BLACK);
         mClient = TwitterApplication.getRestClient();
         mProfileImage = (CircleImageView) findViewById(R.id.cv_profile_user_image);
         mBackgroundImage = (ImageView) findViewById(R.id.iv_profile_banner);

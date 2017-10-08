@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorAccent"
     tools:context="com.jakester.twitterapp.activities.HomeTimelineActivity">
 
     <android.support.v4.view.ViewPager
@@ -44,7 +45,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/home_label"
-                android:textColor="@color/primaryTextColor"
+                android:textColor="@color/colorAccent"
                 android:textStyle="bold" />
 
         </android.support.v7.widget.Toolbar>
@@ -55,9 +56,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_scrollFlags="snap"
-            app:tabTextColor="@color/primaryTextColor"
+            app:tabTextColor="@color/colorAccent"
             app:tabTextAppearance="@style/MineCustomTabText"
-            app:tabSelectedTextColor="@color/primaryTextColor"
+            app:tabSelectedTextColor="@color/colorAccent"
             app:tabMode="fixed" />
 
 
@@ -69,6 +70,7 @@
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorPrimary"
         android:layout_margin="@dimen/fab_margin"
         app:srcCompat="@drawable/ic_compose_tweet"
         app:layout_anchor="@id/viewpager"

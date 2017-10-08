@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorAccent"
     tools:context="com.jakester.twitterapp.activities.ProfileActivity">
 
     <LinearLayout
@@ -45,6 +46,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            android:titleTextColor="@color/colorAccent"
             app:layout_scrollFlags="scroll|enterAlways"
             app:popupTheme="@style/ToolBarStyle"/>
 
