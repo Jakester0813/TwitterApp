@@ -7,13 +7,15 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import com.jakester.twitterapp.fragments.HomeTimelineFragment;
 import com.jakester.twitterapp.fragments.MentionsTimelineFragment;
+import com.jakester.twitterapp.fragments.MessageFragment;
+import com.jakester.twitterapp.fragments.SearchFragment;
 
 /**
  * Created by Jake on 10/5/2017.
  */
 
 public class TwitterFragmentPagerAdapter extends SmartFragmentStatePagerAdapter  {
-    private String tabTitles[] = new String[] { "Home", "Mentions"};
+    private String tabTitles[] = new String[] { "Home", "Mentions", "Search", "Message"};
     private Context context;
 
     public TwitterFragmentPagerAdapter(FragmentManager fm, Context context) {
@@ -34,6 +36,12 @@ public class TwitterFragmentPagerAdapter extends SmartFragmentStatePagerAdapter 
         else if(position == 1){
             return new MentionsTimelineFragment();
         }
+        else if(position == 2){
+            return new SearchFragment();
+        }
+        else if(position == 3){
+            return new MessageFragment();
+        }
         else{
             return null;
         }
@@ -44,4 +52,6 @@ public class TwitterFragmentPagerAdapter extends SmartFragmentStatePagerAdapter 
         // Generate title based on item position
         return tabTitles[position];
     }
+
+
 }

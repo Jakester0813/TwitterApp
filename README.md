@@ -72,6 +72,8 @@ Fixes to do list:
 * [ ] Alignment is off for retweet on Home Timeline
 * [ ] New Tweet dialog could use some touching up
 * [ ] Reply to is pretty buggy
+* [ ] Favorite/Retweet count is not consistent between details and timeline
+* [ ] Add background for profiles that don't have a image
 
 
 ## Video Walkthrough

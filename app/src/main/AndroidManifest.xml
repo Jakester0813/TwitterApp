@@ -41,12 +41,15 @@
             android:name=".activities.TweetActivity"
             android:label="@string/tweet"
             android:theme="@style/AppTheme" />
-        <activity android:name=".activities.ProfileActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".activities.FollowsActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".activities.FollowersActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".activities.ProfileActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.FollowsActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.FollowersActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>
