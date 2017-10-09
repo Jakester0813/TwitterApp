@@ -88,10 +88,10 @@ public class HomeTimelineFragment extends Fragment  implements TweetTouchCallbac
             }
         });
         // Configure the refreshing colors
-        swipeContainer.setColorSchemeResources(R.color.colorAccent,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_blue_bright);
+        swipeContainer.setColorSchemeResources(R.color.colorPrimary,
+                R.color.colorPrimary,
+                R.color.colorPrimary,
+                R.color.colorPrimary);
 
         mAdapter = new TweetAdapter(getContext(), this);
         mTweetRecycler.setAdapter(mAdapter);
