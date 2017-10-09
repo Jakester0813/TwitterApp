@@ -78,7 +78,7 @@
         android:layout_alignParentTop="true"
         android:layout_weight="1"
         android:textColor="@color/secondaryTextColor"
-        android:layout_marginEnd="15dp"
+        android:layout_marginEnd="20dp"
         android:layout_toStartOf="@+id/cv_profile_image" />
 
     <TextView
@@ -88,5 +88,7 @@
         android:layout_weight="1"
         android:textColor="@color/secondaryTextColor"
         android:layout_above="@+id/et_tweet"
+        android:layout_below="@+id/tv_action_name"
+        android:layout_marginEnd="20dp"
         android:layout_toStartOf="@+id/cv_profile_image" />
 </RelativeLayout>
