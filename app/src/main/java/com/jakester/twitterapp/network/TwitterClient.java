@@ -8,6 +8,7 @@ import com.github.scribejava.apis.FlickrApi;
 import com.github.scribejava.apis.TwitterApi;
 import com.github.scribejava.core.builder.api.BaseApi;
 import com.jakester.twitterapp.R;
+import com.jakester.twitterapp.models.User;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
@@ -54,20 +55,62 @@ public class TwitterClient extends OAuthBaseClient {
 		client.get(apiUrl, params, handler);
 	}
 
-	public void getHomeTimelineRefresh(int lastTweetId, AsyncHttpResponseHandler handler) {
-		String apiUrl = getApiUrl("statuses/home_timeline.json");
+    public void getSearchResult(String q, String max_id, AsyncHttpResponseHandler handler) {
+        String apiUrl = getApiUrl("search/tweets.json");
+        // Can specify query string params directly or through RequestParams.
+        RequestParams params = new RequestParams();
+        params.put("q",q);
+		if(!max_id.equals(""))
+        	params.put("max_id", max_id);
+        client.get(apiUrl, params, handler);
+    }
+
+	public void getMentionsTimeline(String maxId, AsyncHttpResponseHandler handler) {
+		String apiUrl = getApiUrl("statuses/mentions_timeline.json");
 		// Can specify query string params directly or through RequestParams.
 		RequestParams params = new RequestParams();
-		params.put("count",25);
-		params.put("since_id", lastTweetId);
+		params.put("count",40);
+		if(!maxId.equals(""))
+			params.put("max_id",maxId);
 		client.get(apiUrl, params, handler);
 	}
+
+	public void getDirectMessages(String maxId, AsyncHttpResponseHandler handler) {
+		String apiUrl = getApiUrl("direct_messages.json");
+		// Can specify query string params directly or through RequestParams.
+		RequestParams params = new RequestParams();
+		params.put("count",40);
+		if(!maxId.equals(""))
+			params.put("max_id",maxId);
+		client.get(apiUrl, params, handler);
+	}
+
 
 	// TwitterClient.java
 	public void postTweet(String body, AsyncHttpResponseHandler handler) {
 		String apiUrl = getApiUrl("statuses/update.json");
 		RequestParams params = new RequestParams();
 		params.put("status", body);
+
+
+		getClient().post(apiUrl, params, handler);
+	}
+
+	public void favoriteTweet(boolean favorited, String id, AsyncHttpResponseHandler handler) {
+
+		String apiUrl = favorited ? getApiUrl("favorites/destroy.json") :
+				getApiUrl("favorites/create.json");
+		RequestParams params = new RequestParams();
+		params.put("id", id);
+		getClient().post(apiUrl, params, handler);
+	}
+
+	public void reTweet(boolean retweeted, String id, AsyncHttpResponseHandler handler) {
+
+		String apiUrl = retweeted ? getApiUrl("statuses/unretweet/"+id+".json") :
+				getApiUrl("statuses/retweet/"+id+".json");
+		RequestParams params = new RequestParams();
+		params.put("id", id);
 		getClient().post(apiUrl, params, handler);
 	}
 
@@ -75,6 +118,33 @@ public class TwitterClient extends OAuthBaseClient {
 		String apiUrl = getApiUrl("account/verify_credentials.json");
 		RequestParams params = new RequestParams();
 		client.get(apiUrl, params, handler);
+	}
+
+	public void getUserTimeline(String id, String maxId, AsyncHttpResponseHandler handler) {
+		String apiUrl = getApiUrl("statuses/user_timeline.json");
+		RequestParams params = new RequestParams();
+		params.put("user_id", id);
+		if(!maxId.equals(""))
+			params.put("max_id",maxId);
+		client.get(apiUrl, params, handler);
+	}
+
+	public void getFollowers(String id, int page, AsyncHttpResponseHandler handler) {
+		String apiUrl = getApiUrl("followers/list.json");
+		RequestParams params = new RequestParams();
+		params.put("user_id", id);
+		params.put("count",50);
+		params.put("page", page);
+		getClient().get(apiUrl, params, handler);
+	}
+
+	public void getFollowing(String id, int page, AsyncHttpResponseHandler handler) {
+		String apiUrl = getApiUrl("friends/list.json");
+		RequestParams params = new RequestParams();
+		params.put("user_id", id);
+		params.put("count",50);
+		params.put("page", page);
+		getClient().get(apiUrl, params, handler);
 	}
 
 	/* 1. Define the endpoint URL with getApiUrl and pass a relative path to the endpoint

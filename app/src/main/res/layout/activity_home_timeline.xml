@@ -4,11 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorAccent"
     tools:context="com.jakester.twitterapp.activities.HomeTimelineActivity">
 
-    <android.support.design.widget.AppBarLayout
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:adjustViewBounds="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:background="@android:color/white" />
+
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/ab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/viewpager"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
@@ -32,23 +45,39 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/home_label"
-                android:textColor="@color/primaryTextColor"
+                android:textColor="@color/colorAccent"
                 android:textStyle="bold" />
 
         </android.support.v7.widget.Toolbar>
 
 
+        <android.support.design.widget.TabLayout
+            android:id="@+id/sliding_tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_scrollFlags="snap"
+            app:tabTextColor="@color/colorAccent"
+            app:tabTextAppearance="@style/MineCustomTabText"
+            app:tabSelectedTextColor="@color/colorAccent"
+            app:tabMode="fixed" />
+
+
     </android.support.design.widget.AppBarLayout>
 
 
-    <include layout="@layout/content_main_twitter" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
+        app:backgroundTint="@color/colorPrimary"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@drawable/ic_compose_tweet" />
+        app:srcCompat="@drawable/ic_compose_tweet"
+        app:layout_anchor="@id/viewpager"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        app:layout_anchorGravity="bottom|right|end"/>
+
 
 </android.support.design.widget.CoordinatorLayout>

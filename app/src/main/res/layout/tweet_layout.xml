@@ -3,8 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:padding="4dp"
     android:descendantFocusability="blocksDescendants"
     android:background="@android:color/white">
+
 
     <de.hdodenhof.circleimageview.CircleImageView
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -13,8 +15,8 @@
         android:layout_height="30dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        android:layout_marginTop="12dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         app:srcCompat="@drawable/twitter_button" />
 
 
@@ -24,49 +26,56 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
-            android:layout_marginTop="8dp"
             android:layout_marginStart="8dp"
             android:layout_weight="1"
+            android:layout_alignParentTop="true"
             android:textColor="@color/primaryTextColor"
             android:text="TextView"
-            android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/iv_profile_image" />
 
         <TextView
             android:id="@+id/tv_user_handle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_alignParentTop="true"
             android:layout_marginStart="2dp"
-            android:layout_weight="1"
+            android:maxLines="1"
+            android:maxLength="10"
             android:textColor="@color/secondaryTextColor"
             android:ellipsize="end"
-            android:text="TextView"
-            android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/tv_username" />
 
         <TextView
             android:id="@+id/tv_seperator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="-4dp"
             android:layout_marginStart="4dp"
             android:layout_weight="1"
             android:textColor="@color/secondaryTextColor"
             android:text="@string/period"
-            android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/tv_user_handle" />
 
         <TextView
             android:id="@+id/tv_time_stamp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginStart="4dp"
             android:layout_weight="1"
-            android:textColor="@color/secondaryTextColor"
             android:layout_alignParentTop="true"
+            android:textColor="@color/secondaryTextColor"
             android:layout_toEndOf="@+id/tv_seperator" />
+
+        <TextView
+            android:id="@+id/tv_replying_to"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="12dp"
+            android:layout_marginStart="8dp"
+            android:layout_toEndOf="@+id/iv_profile_image"
+            android:layout_below="@+id/tv_username"
+            android:textColor="@color/secondaryTextColor"
+            android:visibility="gone"/>
 
         <com.jakester.twitterapp.customwidgets.LinkifiedTextView
             android:id="@+id/tv_tweet_body"
@@ -77,8 +86,67 @@
             android:layout_weight="1"
             android:autoLink="all"
             android:linksClickable="true"
-            android:textColorLink="@color/colorAccent"
+            android:textColorLink="@color/colorPrimary"
             android:layout_toEndOf="@+id/iv_profile_image"
-            android:layout_below="@+id/tv_username" />
+            android:layout_below="@+id/tv_replying_to" />
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:orientation="horizontal"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/iv_profile_image"
+        android:layout_below="@+id/tv_tweet_body">
+
+        <ImageView
+            android:id="@+id/iv_reply"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/ic_reply"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="8dp"
+            android:tint="@color/secondaryTextColor"/>
+
+        <ImageView
+            android:id="@+id/iv_retweet"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/ic_retweet"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="7dp"
+            android:layout_toEndOf="@+id/iv_reply"
+            android:layout_marginStart="60dp" />
+        <TextView
+            android:id="@+id/tv_retweet_num"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_height="25dp"
+            android:textColor="@color/secondaryTextColor"
+            android:gravity="center_vertical"
+            android:layout_marginEnd="40dp"
+            android:layout_toEndOf="@+id/iv_retweet" />
+
+        <ImageView
+            android:id="@+id/iv_favorite"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/ic_favorite_border"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/tv_favorite_num"
+            android:layout_marginEnd="7dp" />
+        <TextView
+            android:id="@+id/tv_favorite_num"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:textColor="@color/secondaryTextColor"
+            android:layout_marginLeft="8dp"
+
+            android:gravity="center_vertical"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="21dp" />
+
+    </RelativeLayout>
 
 </RelativeLayout>

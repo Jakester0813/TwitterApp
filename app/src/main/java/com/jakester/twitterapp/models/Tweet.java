@@ -39,6 +39,8 @@ public class Tweet extends BaseModel {
 	Long id;
 	// Define table fields
 	@Column
+	String tweetId;
+	@Column
 	String timestamp;
 	@Column
 	String timestampDetail;
@@ -64,25 +66,31 @@ public class Tweet extends BaseModel {
 	boolean favorited;
 	@Column
 	boolean retweeted;
+	@Column
+	String replyFrom;
+
+	User mUser;
+
+	String mImageURL;
 
 
 	public Tweet(){
 		super();
 	}
 
-	public Tweet(User pUser, String pTweet) {
+	public Tweet(User pUser, String pTweet, String replyTo) {
 		super();
 		this.timestamp = "0s";
-		try {
-			this.timestampDetail = setTimeStampDetail(new Date().toString());
-		}
-		catch (ParseException e) {
-			e.printStackTrace();
-			this.timestampDetail = "I AM ALSO ERROR";
-		}
+		this.timestampDetail = "0s";
 		this.userImage = pUser.getProfileImage();
 		this.userName = pUser.getName();
 		this.userHandle = pUser.getScreenName();
+		if(!replyTo.equals("")) {
+			this.replyFrom = replyTo;
+		}
+		else{
+			this.replyFrom = "null";
+		}
 		this.body = pTweet;
 	}
 
@@ -100,20 +108,23 @@ public class Tweet extends BaseModel {
 				this.timestamp = "I AM ERROR";
 				this.timestampDetail = "I AM ALSO ERROR";
 			}
-			User user = User.fromJSON(object.getJSONObject("user"));
-			this.userImage = user.getProfileImage();
-			this.userName = user.getName();
-			this.userHandle = user.getScreenName();
+			this.mUser = User.fromJSON(object.getJSONObject("user"));
+			this.tweetId = object.getString("id_str");
+			this.userImage = mUser.getProfileImage();
+			this.userName = mUser.getName();
+			this.userHandle = mUser.getScreenName();
 			this.body = object.getString("text");
-			if(object.optJSONObject("entities").optJSONArray("urls").optJSONObject(0) != null) {
-				this.url = object.optJSONObject("entities").optJSONArray("urls").optJSONObject(0).optString("url");
-				this.displayUrl = object.optJSONObject("entities").optJSONArray("urls").optJSONObject(0).optString("display_url");
-				this.expandedUrl = object.optJSONObject("entities").optJSONArray("urls").optJSONObject(0).optString("expanded_url");
+			String[] text = body.split(" ");
+			this.mImageURL = "";
+			if(text[text.length-1].contains("https://t.co")){
+				this.mImageURL = text[text.length-1];
+				this.body.replace(this.mImageURL, "");
 			}
 			this.favorited = object.getBoolean("favorited");
 			this.favoritedCount = object.getInt("favorite_count");
 			this.retweeted = object.getBoolean("retweeted");
 			this.retweetCount = object.getInt("retweet_count");
+			this.replyFrom = object.optString("in_reply_to_screen_name","");
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -182,6 +193,8 @@ public class Tweet extends BaseModel {
 		return sb.toString();
 	}
 
+	public String getTweetId() { return tweetId; }
+
 	public String getTimestamp(){
 		return timestamp;
 	}
@@ -199,12 +212,18 @@ public class Tweet extends BaseModel {
 	}
 
 	public String getUserHandle(){
-		return "@"+userHandle;
+		return userHandle;
+	}
+
+	public User getUser(){
+		return mUser;
 	}
 
 	public String getTweet(){
 		return body;
 	}
+
+	public String getImageUrl() { return mImageURL;}
 
 	public String getUrl(){
 		return url;
@@ -218,5 +237,43 @@ public class Tweet extends BaseModel {
 		return displayUrl;
 	}
 
+	public boolean getRetweeted() { return retweeted; }
+
+	public void setRetweeted (boolean retweet) {this.retweeted = retweet;}
+
+	public int getRetweetCount() { return retweetCount; }
+
+	public void setRetweetCount (boolean retweeted) {
+		if(getRetweeted()) {
+			this.retweetCount++;
+		}
+		else{
+			this.retweetCount--;
+		}
+	}
+
+	public boolean getFavorited() { return favorited; }
+
+	public void setFavorited(boolean favorite) {this.favorited = favorite;}
+
 	public int getFavoritedCount() { return favoritedCount; }
+
+	//This is to be called after the successful call to favorite and resetting favorited boolean
+	public void setFavoritedCount (boolean favorite) {
+		if(getFavorited()) {
+			this.favoritedCount++;
+		}
+		else{
+			this.favoritedCount--;
+		}
+	}
+
+	public String getRetweetedBy(){
+		if(!replyFrom.equals("null")){
+			return "Replying to @" + replyFrom;
+		}
+		else{
+			return "";
+		}
+	}
 }

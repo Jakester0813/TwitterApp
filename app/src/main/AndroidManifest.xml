@@ -13,15 +13,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <activity android:name=".activities.SplashActivity"
+            android:theme="@style/AppTheme.NoActionBarSplash">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".activities.LoginActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -36,10 +40,20 @@
         <activity
             android:name=".activities.HomeTimelineActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".activities.TweetActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.TweetActivity"
             android:label="@string/tweet"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activities.ProfileActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.FollowsActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.FollowersActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

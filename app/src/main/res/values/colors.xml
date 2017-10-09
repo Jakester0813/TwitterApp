@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#FFFFFF</color>
-    <color name="colorPrimaryDark">#DDDDDD</color>
-    <color name="colorAccent">#1DA1F2</color>
+    <color name="colorPrimary">#53abf1</color>
+    <color name="colorPrimaryDark">#429ae0</color>
+    <color name="colorAccent">#FFFFFF</color>
     <color name="primaryTextColor">#000000</color>
     <color name="secondaryTextColor">#6F7D87</color>
+    <color name="favortiedColor">#E0245E</color>
+    <color name="retweetedColor">#40CA7F</color>
+    <color name="lineColor">#FAFAFA</color>
 </resources>
