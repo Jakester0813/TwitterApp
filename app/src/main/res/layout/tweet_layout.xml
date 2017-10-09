@@ -116,7 +116,7 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="7dp"
             android:layout_toEndOf="@+id/iv_reply"
-            android:layout_marginStart="80dp" />
+            android:layout_marginStart="60dp" />
         <TextView
             android:id="@+id/tv_retweet_num"
             android:layout_width="wrap_content"
