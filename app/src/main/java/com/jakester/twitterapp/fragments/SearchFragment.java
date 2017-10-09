@@ -25,6 +25,7 @@ import com.jakester.twitterapp.application.TwitterApplication;
 import com.jakester.twitterapp.listener.EndlessScrollListener;
 import com.jakester.twitterapp.listener.TweetTouchCallback;
 import com.jakester.twitterapp.managers.InternetManager;
+import com.jakester.twitterapp.models.SimpleDividerItemDecoration;
 import com.jakester.twitterapp.models.Tweet;
 import com.jakester.twitterapp.network.TwitterClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -79,7 +80,7 @@ public class SearchFragment extends Fragment  implements TweetTouchCallback {
         };
         mTweetRecycler.addOnScrollListener(scrollListener);
         mTweetRecycler.setAdapter(mAdapter);
-
+        mTweetRecycler.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
         return v;
     }
 

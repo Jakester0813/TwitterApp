@@ -14,6 +14,7 @@ import com.jakester.twitterapp.adapter.UserAdapter;
 import com.jakester.twitterapp.application.TwitterApplication;
 import com.jakester.twitterapp.listener.EndlessScrollListener;
 import com.jakester.twitterapp.managers.InternetManager;
+import com.jakester.twitterapp.models.SimpleDividerItemDecoration;
 import com.jakester.twitterapp.models.Tweet;
 import com.jakester.twitterapp.models.User;
 import com.jakester.twitterapp.network.TwitterClient;
@@ -53,7 +54,7 @@ public class FollowersActivity extends AppCompatActivity{
         mTweetRecycler = (RecyclerView) findViewById(R.id.rv_follows);
         mManager = new LinearLayoutManager(this);
         mTweetRecycler.setLayoutManager(mManager);
-
+        mTweetRecycler.addItemDecoration(new SimpleDividerItemDecoration(this));
         mAdapter = new UserAdapter(this);
         mTweetRecycler.setAdapter(mAdapter);
         EndlessScrollListener scrollListener = new EndlessScrollListener(mManager) {

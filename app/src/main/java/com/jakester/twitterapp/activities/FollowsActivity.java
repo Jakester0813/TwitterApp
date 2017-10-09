@@ -30,6 +30,7 @@ import com.jakester.twitterapp.application.TwitterApplication;
 import com.jakester.twitterapp.fragments.NewTweetDialogFragment;
 import com.jakester.twitterapp.listener.EndlessScrollListener;
 import com.jakester.twitterapp.managers.InternetManager;
+import com.jakester.twitterapp.models.SimpleDividerItemDecoration;
 import com.jakester.twitterapp.models.Tweet;
 import com.jakester.twitterapp.models.User;
 import com.jakester.twitterapp.network.TwitterClient;
@@ -77,7 +78,7 @@ public class FollowsActivity extends AppCompatActivity{
 
         mAdapter = new UserAdapter(this);
         mTweetRecycler.setAdapter(mAdapter);
-
+        mTweetRecycler.addItemDecoration(new SimpleDividerItemDecoration(this));
         EndlessScrollListener scrollListener = new EndlessScrollListener(mManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {

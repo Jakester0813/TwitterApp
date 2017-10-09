@@ -17,7 +17,6 @@ import com.jakester.twitterapp.R;
 import com.jakester.twitterapp.activities.ProfileActivity;
 import com.jakester.twitterapp.activities.TweetActivity;
 import com.jakester.twitterapp.customwidgets.LinkifiedTextView;
-import com.jakester.twitterapp.databinding.TweetLayoutBinding;
 import com.jakester.twitterapp.listener.TweetTouchCallback;
 import com.jakester.twitterapp.models.Tweet;
 import com.jakester.twitterapp.util.PatternEditableBuilder;
@@ -82,7 +81,6 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.TweetViewhol
     }
 
     public class TweetViewholder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TweetLayoutBinding binding;
         public ImageView mProfileImage, mReplyImage, mRetweetImage, mFavoriteImage;
         public TextView mRetweetedBy, mUserName, mUserHandle, mTimeStamp, mRetweetsNum, mFavoritesNum;
         public LinkifiedTextView mBody;

@@ -70,7 +70,7 @@
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/colorPrimary"
+        app:backgroundTint="@color/colorPrimary"
         android:layout_margin="@dimen/fab_margin"
         app:srcCompat="@drawable/ic_compose_tweet"
         app:layout_anchor="@id/viewpager"

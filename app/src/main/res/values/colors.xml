@@ -7,4 +7,5 @@
     <color name="secondaryTextColor">#6F7D87</color>
     <color name="favortiedColor">#E0245E</color>
     <color name="retweetedColor">#40CA7F</color>
+    <color name="lineColor">#FAFAFA</color>
 </resources>

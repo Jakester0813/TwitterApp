@@ -18,6 +18,7 @@ import com.jakester.twitterapp.application.TwitterApplication;
 import com.jakester.twitterapp.listener.EndlessScrollListener;
 import com.jakester.twitterapp.listener.TweetTouchCallback;
 import com.jakester.twitterapp.managers.InternetManager;
+import com.jakester.twitterapp.models.SimpleDividerItemDecoration;
 import com.jakester.twitterapp.models.Tweet;
 import com.jakester.twitterapp.network.TwitterClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -52,7 +53,7 @@ public class MentionsTimelineFragment extends Fragment implements TweetTouchCall
 
         mAdapter = new TweetAdapter(getContext(), this);
         mTweetRecycler.setAdapter(mAdapter);
-
+        mTweetRecycler.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
 
 
         return v;

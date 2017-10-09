@@ -73,7 +73,7 @@ public class TweetActivity extends AppCompatActivity implements NewTweetDialogFr
 
 
         new PatternEditableBuilder().
-                addPattern(Pattern.compile("\\@(\\w+)"), getResources().getColor(R.color.colorAccent),
+                addPattern(Pattern.compile("\\@(\\w+)"), getResources().getColor(R.color.colorPrimary),
                         new PatternEditableBuilder.SpannableClickedListener() {
                             @Override
                             public void onSpanClicked(String text) {
@@ -82,7 +82,7 @@ public class TweetActivity extends AppCompatActivity implements NewTweetDialogFr
                             }
                         }).into(this.mTweetBody);
         new PatternEditableBuilder().
-                addPattern(Pattern.compile("\\#(\\w+)"), getResources().getColor(R.color.colorAccent),
+                addPattern(Pattern.compile("\\#(\\w+)"), getResources().getColor(R.color.colorPrimary),
                         new PatternEditableBuilder.SpannableClickedListener() {
                             @Override
                             public void onSpanClicked(String text) {

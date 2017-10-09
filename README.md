@@ -2,7 +2,7 @@
 
 **TwitterApp** is an android app that allows a user to view home and mentions timelines, view user profiles with user timelines, as well as compose and post a new tweet. The app utilizes [Twitter REST API](https://developer.twitter.com/en/docs/api-reference-index).
 
-Time spent: **x** hours spent in total
+Time spent: **45** hours spent in total
 
 ## User Stories
 
@@ -59,7 +59,7 @@ The following **bonus** features are implemented:
 * [ ] Enable your app to [receive implicit intents](http://guides.codepath.com/android/Using-Intents-to-Create-Flows#receiving-implicit-intents) from other apps.  When a link is shared from a web browser, it should pre-fill the text and title of the web page when composing a tweet.
 * [x] When a user leaves the compose view without publishing and there is existing text, prompt to save or delete the draft.  The draft can be resumed from the compose view.
 * [x] On the profile screen, leverage the [CoordinatorLayout](http://guides.codepath.com/android/Handling-Scrolls-with-CoordinatorLayout#responding-to-scroll-events) to [apply scrolling behavior](https://hackmd.io/s/SJyDOCgU) as the user scrolls through the profile timeline.
-* [ ] User can view their direct messages (or send new ones)
+* [x] User can view their direct messages (or send new ones)
 
 The following **additional** features are implemented:
 
@@ -67,12 +67,8 @@ The following **additional** features are implemented:
 * [x] If the tweet is in reply to another tweet, show the user that the tweet is responding to
 * [x] The User is able to retweet or favorite any tweet on the home timeline
 * [x] Added a splash screen
-* [ ] Add navigation back buttons for tweets and profiles
+* [x] Add navigation back buttons for tweets and profiles
 
-Fixes to do list:
-* [ ] New Tweet dialog could use some touching up
-* [ ] Add background for profiles that don't have a image
-* [ ] Search bar needs to be fixed to not remove profile icon
 
 
 ## Video Walkthrough

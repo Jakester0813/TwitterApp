@@ -23,6 +23,7 @@ import com.jakester.twitterapp.application.TwitterApplication;
 import com.jakester.twitterapp.listener.EndlessScrollListener;
 import com.jakester.twitterapp.listener.TweetTouchCallback;
 import com.jakester.twitterapp.managers.InternetManager;
+import com.jakester.twitterapp.models.SimpleDividerItemDecoration;
 import com.jakester.twitterapp.models.Tweet;
 import com.jakester.twitterapp.models.User;
 import com.jakester.twitterapp.network.TwitterClient;
@@ -61,7 +62,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         toolbar.setTitle(mUser.getName());
         toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mClient = TwitterApplication.getRestClient();
         mProfileImage = (CircleImageView) findViewById(R.id.cv_profile_user_image);
         mBackgroundImage = (ImageView) findViewById(R.id.iv_profile_banner);
@@ -95,6 +96,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         mTweetsRecycler.setLayoutManager(mLayoutManager);
         mAdapter = new TweetAdapter(getBaseContext(), this);
         mTweetsRecycler.setAdapter(mAdapter);
+        mTweetsRecycler.addItemDecoration(new SimpleDividerItemDecoration(this));
         scrollListener = new EndlessScrollListener(mLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
