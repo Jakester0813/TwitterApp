@@ -3,7 +3,6 @@ package com.jakester.twitterapp.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,13 +20,11 @@ import com.jakester.twitterapp.R;
 import com.jakester.twitterapp.activities.HomeTimelineActivity;
 import com.jakester.twitterapp.activities.TweetActivity;
 import com.jakester.twitterapp.adapter.TweetAdapter;
-import com.jakester.twitterapp.application.TwitterApplication;
 import com.jakester.twitterapp.listener.EndlessScrollListener;
 import com.jakester.twitterapp.listener.TweetTouchCallback;
 import com.jakester.twitterapp.managers.InternetManager;
 import com.jakester.twitterapp.models.SimpleDividerItemDecoration;
 import com.jakester.twitterapp.models.Tweet;
-import com.jakester.twitterapp.network.TwitterClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
@@ -35,24 +32,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcels;
 
-import java.util.ArrayList;
-
 import cz.msebera.android.httpclient.Header;
 
 /**
  * Created by Jake on 10/4/2017.
  */
 
-public class SearchFragment extends Fragment  implements TweetTouchCallback {
-
-    ArrayList<Tweet> tweets;
-    TweetAdapter mAdapter;
-    RecyclerView mTweetRecycler;
+public class SearchFragment extends BaseTimelineFragment  implements TweetTouchCallback {
     ProgressBar mProgressBar;
-
-    private EndlessScrollListener scrollListener;
-    TwitterClient mClient;
-
     String mQuery;
 
     //inflation happens inside onCreateView
@@ -61,9 +48,9 @@ public class SearchFragment extends Fragment  implements TweetTouchCallback {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_search, container, false);
         mProgressBar = (ProgressBar) v.findViewById(R.id.pb_tweet_search);
-        mTweetRecycler = (RecyclerView) v.findViewById(R.id.rv_tweets);
+        mRecycler = (RecyclerView) v.findViewById(R.id.rv_tweets);
         LinearLayoutManager mManager = new LinearLayoutManager(getActivity());
-        mTweetRecycler.setLayoutManager(mManager);
+        mRecycler.setLayoutManager(mManager);
         mAdapter = new TweetAdapter(getActivity(), this);
         scrollListener = new EndlessScrollListener(mManager) {
             @Override
@@ -78,9 +65,9 @@ public class SearchFragment extends Fragment  implements TweetTouchCallback {
                 }
             }
         };
-        mTweetRecycler.addOnScrollListener(scrollListener);
-        mTweetRecycler.setAdapter(mAdapter);
-        mTweetRecycler.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
+        mRecycler.addOnScrollListener(scrollListener);
+        mRecycler.setAdapter(mAdapter);
+        mRecycler.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
         return v;
     }
 
@@ -104,7 +91,7 @@ public class SearchFragment extends Fragment  implements TweetTouchCallback {
                         scrollListener.resetState();
                     }
                     mQuery = query;
-                    mTweetRecycler.setVisibility(View.GONE);
+                    mRecycler.setVisibility(View.GONE);
                     mProgressBar.setVisibility(View.VISIBLE);
                     searchTweets(query, "");
                     searchView.clearFocus();
@@ -123,15 +110,23 @@ public class SearchFragment extends Fragment  implements TweetTouchCallback {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    public void searchTweets(String q, String maxId) {
-        mClient.getSearchResult(q, maxId, new JsonHttpResponseHandler(){
+
+
+    public interface NewTweetCallback {
+        void onTweetAction(Tweet tweet, boolean reply);
+    }
+
+    protected void searchTweets(String q, String maxId) {
+        ((HomeTimelineActivity)getActivity()).showProgressBar();
+        client.getSearchResult(q, maxId, new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                ((HomeTimelineActivity)getActivity()).hideProgressBar();
                 Log.d("OBJECT", response.toString());
                 try {
                     JSONArray obj = response.getJSONArray("statuses");
                     mProgressBar.setVisibility(View.GONE);
-                    mTweetRecycler.setVisibility(View.VISIBLE);
+                    mRecycler.setVisibility(View.VISIBLE);
                     tweets = Tweet.fromJson(obj);
                     mAdapter.addTweets(tweets);
                 } catch (JSONException e) {
@@ -143,41 +138,32 @@ public class SearchFragment extends Fragment  implements TweetTouchCallback {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 Log.d("ARRAY", response.toString());
-
+                ((HomeTimelineActivity)getActivity()).hideProgressBar();
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 Log.d("TwitterClient", errorResponse.toString());
                 throwable.printStackTrace();
+                ((HomeTimelineActivity)getActivity()).hideProgressBar();
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
                 Log.d("TwitterClient", errorResponse.toString());
                 throwable.printStackTrace();
+                ((HomeTimelineActivity)getActivity()).hideProgressBar();
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 Log.d("TwitterClient", responseString);
                 throwable.printStackTrace();
+                ((HomeTimelineActivity)getActivity()).hideProgressBar();
             }
         });
     }
 
-    public interface NewTweetCallback {
-        void onTweetAction(Tweet tweet, boolean reply);
-    }
-
-
-
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mClient = TwitterApplication.getRestClient();
-    }
 
 
     @Override
@@ -196,75 +182,5 @@ public class SearchFragment extends Fragment  implements TweetTouchCallback {
             tweetDetails.putExtra("tweet", Parcels.wrap(tweet));
             startActivityForResult(tweetDetails, 1);
         }
-    }
-
-    private void favoriteTweet(final Tweet tweet){
-        mClient.favoriteTweet(tweet.getFavorited(), tweet.getTweetId(), new JsonHttpResponseHandler(){
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                Log.d("OBJECT", response.toString());
-                tweet.setFavorited(!tweet.getFavorited());
-                tweet.setFavoritedCount(tweet.getFavorited());
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                Log.d("ARRAY", response.toString());
-                //addTweet(tweet);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                Log.d("TwitterClient", errorResponse.toString());
-                throwable.printStackTrace();
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                Log.d("TwitterClient", errorResponse.toString());
-                throwable.printStackTrace();
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Log.d("TwitterClient", responseString);
-                throwable.printStackTrace();
-            }
-        });
-    }
-
-    private void retweetTweet(final Tweet tweet){
-        mClient.reTweet(tweet.getRetweeted(), tweet.getTweetId(), new JsonHttpResponseHandler(){
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                Log.d("OBJECT", response.toString());
-                tweet.setRetweeted(!tweet.getRetweeted());
-                tweet.setFavoritedCount(tweet.getRetweeted());
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                Log.d("ARRAY", response.toString());
-                //addTweet(tweet);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                Log.d("TwitterClient", errorResponse.toString());
-                throwable.printStackTrace();
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                Log.d("TwitterClient", errorResponse.toString());
-                throwable.printStackTrace();
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Log.d("TwitterClient", responseString);
-                throwable.printStackTrace();
-            }
-        });
     }
 }

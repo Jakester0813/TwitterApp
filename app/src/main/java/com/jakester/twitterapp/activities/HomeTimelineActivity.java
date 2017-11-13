@@ -50,6 +50,8 @@ public class HomeTimelineActivity extends AppCompatActivity
         implements  HomeTimelineFragment.NewTweetCallback, NewTweetDialogFragment.FilterDialogListener{
 
     private Subscription subscription;
+    private int tabImages[] = new int[] {R.drawable.ic_home, R.drawable.ic_at,
+            R.drawable.ic_search, R.drawable.ic_message};
 
     MenuItem miActionProgressItem;
     CircleImageView mProfilePhoto;
@@ -59,6 +61,7 @@ public class HomeTimelineActivity extends AppCompatActivity
     boolean started;
     FloatingActionButton fab;
     TwitterFragmentPagerAdapter mFragAdapter;
+    TabLayout tabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +112,7 @@ public class HomeTimelineActivity extends AppCompatActivity
             }
         });
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+        tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(vpPager);
 
         noInternetDialog = InternetManager.getInstance(this).noInternetDialog();
@@ -122,6 +125,14 @@ public class HomeTimelineActivity extends AppCompatActivity
                 startActivity(i);
             }
         });
+        setupTabIcons();
+    }
+
+    private void setupTabIcons() {
+        tabLayout.getTabAt(0).setIcon(tabImages[0]);
+        tabLayout.getTabAt(1).setIcon(tabImages[1]);
+        tabLayout.getTabAt(2).setIcon(tabImages[2]);
+        tabLayout.getTabAt(3).setIcon(tabImages[3]);
     }
 
 

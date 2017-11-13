@@ -1,9 +1,7 @@
 package com.jakester.twitterapp.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -13,15 +11,12 @@ import android.view.ViewGroup;
 
 import com.jakester.twitterapp.R;
 import com.jakester.twitterapp.activities.HomeTimelineActivity;
-import com.jakester.twitterapp.activities.TweetActivity;
 import com.jakester.twitterapp.adapter.MessageAdapter;
 import com.jakester.twitterapp.application.TwitterApplication;
 import com.jakester.twitterapp.listener.EndlessScrollListener;
-import com.jakester.twitterapp.listener.TweetTouchCallback;
 import com.jakester.twitterapp.managers.InternetManager;
 import com.jakester.twitterapp.models.Message;
 import com.jakester.twitterapp.models.SimpleDividerItemDecoration;
-import com.jakester.twitterapp.network.TwitterClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
@@ -36,26 +31,21 @@ import cz.msebera.android.httpclient.Header;
  * Created by Jake on 10/4/2017.
  */
 
-public class MessageFragment extends Fragment{
-
-    private EndlessScrollListener scrollListener;
+public class MessageFragment extends BaseTimelineFragment{
     ArrayList<Message> messages;
     MessageAdapter mAdapter;
-    RecyclerView mMessagesRecycler;
-    LinearLayoutManager mManager;
-    TwitterClient mClient;
 
     //inflation happens inside onCreateView
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_message, container, false);
-        mMessagesRecycler = (RecyclerView) v.findViewById(R.id.rv_messages);
+        mRecycler = (RecyclerView) v.findViewById(R.id.rv_messages);
         mManager = new LinearLayoutManager(getActivity());
-        mMessagesRecycler.setLayoutManager(mManager);
+        mRecycler.setLayoutManager(mManager);
         mAdapter = new MessageAdapter(getActivity());
-        mMessagesRecycler.setAdapter(mAdapter);
-        mMessagesRecycler.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
+        mRecycler.setAdapter(mAdapter);
+        mRecycler.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
         return v;
     }
 
@@ -65,37 +55,42 @@ public class MessageFragment extends Fragment{
     }
 
     public void getMessages(String maxId) {
-        mClient.getDirectMessages(maxId, new JsonHttpResponseHandler(){
+        ((HomeTimelineActivity)getActivity()).showProgressBar();
+        client.getDirectMessages(maxId, new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 Log.d("OBJECT", response.toString());
-
+                ((HomeTimelineActivity)getActivity()).hideProgressBar();
             }
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 Log.d("ARRAY", response.toString());
-                mMessagesRecycler.setVisibility(View.VISIBLE);
+                mRecycler.setVisibility(View.VISIBLE);
                 messages = Message.fromJson(response);
                 mAdapter.addMessages(messages);
+                ((HomeTimelineActivity)getActivity()).hideProgressBar();
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 Log.d("TwitterClient", errorResponse.toString());
                 throwable.printStackTrace();
+                ((HomeTimelineActivity)getActivity()).hideProgressBar();
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
                 Log.d("TwitterClient", errorResponse.toString());
                 throwable.printStackTrace();
+                ((HomeTimelineActivity)getActivity()).hideProgressBar();
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 Log.d("TwitterClient", responseString);
                 throwable.printStackTrace();
+                ((HomeTimelineActivity)getActivity()).hideProgressBar();
             }
         });
     }
@@ -103,7 +98,7 @@ public class MessageFragment extends Fragment{
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mClient = TwitterApplication.getRestClient();
+        client = TwitterApplication.getRestClient();
         scrollListener = new EndlessScrollListener(mManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
@@ -117,7 +112,7 @@ public class MessageFragment extends Fragment{
                 }
             }
         };
-        mMessagesRecycler.addOnScrollListener(scrollListener);
+        mRecycler.addOnScrollListener(scrollListener);
 
         getMessages("");
     }

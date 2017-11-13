@@ -1,9 +1,14 @@
 package com.jakester.twitterapp.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ImageSpan;
 
+import com.jakester.twitterapp.R;
 import com.jakester.twitterapp.fragments.HomeTimelineFragment;
 import com.jakester.twitterapp.fragments.MentionsTimelineFragment;
 import com.jakester.twitterapp.fragments.MessageFragment;
@@ -14,7 +19,8 @@ import com.jakester.twitterapp.fragments.SearchFragment;
  */
 
 public class TwitterFragmentPagerAdapter extends SmartFragmentStatePagerAdapter  {
-    private String tabTitles[] = new String[] { "Home", "Mentions", "Search", "Message"};
+    private int tabImages[] = new int[] {R.drawable.ic_home, R.drawable.ic_at,
+            R.drawable.ic_search, R.drawable.ic_message};
     private Context context;
 
     public TwitterFragmentPagerAdapter(FragmentManager fm, Context context) {
@@ -24,8 +30,10 @@ public class TwitterFragmentPagerAdapter extends SmartFragmentStatePagerAdapter 
 
     @Override
     public int getCount() {
-        return tabTitles.length;
+        return tabImages.length;
     }
+
+
 
     @Override
     public Fragment getItem(int position) {
@@ -45,12 +53,5 @@ public class TwitterFragmentPagerAdapter extends SmartFragmentStatePagerAdapter 
             return null;
         }
     }
-
-    @Override
-    public CharSequence getPageTitle(int position) {
-        // Generate title based on item position
-        return tabTitles[position];
-    }
-
 
 }
