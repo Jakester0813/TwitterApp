@@ -1,4 +1,4 @@
-package com.jakester.twitterapp.listener;
+package com.jakester.twitterapp.interfaces;
 
 import android.view.View;
 

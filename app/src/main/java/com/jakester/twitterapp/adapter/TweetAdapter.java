@@ -2,7 +2,6 @@ package com.jakester.twitterapp.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,14 +9,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
 
 import com.bumptech.glide.Glide;
 import com.jakester.twitterapp.R;
 import com.jakester.twitterapp.activities.ProfileActivity;
-import com.jakester.twitterapp.activities.TweetActivity;
 import com.jakester.twitterapp.customwidgets.LinkifiedTextView;
-import com.jakester.twitterapp.listener.TweetTouchCallback;
+import com.jakester.twitterapp.interfaces.TweetTouchCallback;
 import com.jakester.twitterapp.models.Tweet;
 import com.jakester.twitterapp.util.PatternEditableBuilder;
 

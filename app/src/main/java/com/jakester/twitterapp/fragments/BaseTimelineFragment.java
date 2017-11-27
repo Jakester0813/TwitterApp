@@ -16,7 +16,7 @@ import com.jakester.twitterapp.activities.HomeTimelineActivity;
 import com.jakester.twitterapp.adapter.TweetAdapter;
 import com.jakester.twitterapp.application.TwitterApplication;
 import com.jakester.twitterapp.listener.EndlessScrollListener;
-import com.jakester.twitterapp.listener.TweetTouchCallback;
+import com.jakester.twitterapp.interfaces.TweetTouchCallback;
 import com.jakester.twitterapp.managers.InternetManager;
 import com.jakester.twitterapp.models.SimpleDividerItemDecoration;
 import com.jakester.twitterapp.models.Tweet;
